@@ -1,0 +1,39 @@
+{
+  "id": "comp_6f2928dc",
+  "source": {
+    "url": "https://dawn-theme-demo.myshopify.com",
+    "type": "shopify_theme_demo",
+    "vertical": "general"
+  },
+  "sections": [],
+  "palette": {
+    "background": "#FFFFFF",
+    "surface": "#f2f2f2",
+    "text_primary": "#1A1A1A",
+    "text_secondary": "#4d4d4d",
+    "accent": "#C5A455",
+    "dark_bg": "#1A1A1A",
+    "is_dark_theme": false,
+    "proportions": [],
+    "indian_color_signals": {
+      "has_gold": false,
+      "gold_proportion": 0,
+      "has_maroon": false,
+      "maroon_proportion": 0,
+      "has_saffron": false,
+      "has_deep_green": false
+    }
+  },
+  "typography": {
+    "heading_font": "Inter",
+    "body_font": "Inter",
+    "closest_pairing_id": "fp_20"
+  },
+  "quality_score": 20,
+  "section_count": 0,
+  "dark_section_rhythm": "",
+  "tags": [
+    "minimal"
+  ],
+  "crawled_at": "2026-03-02T20:18:11.147Z"
+}

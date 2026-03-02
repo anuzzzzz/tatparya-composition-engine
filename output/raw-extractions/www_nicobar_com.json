@@ -1,0 +1,132 @@
+{
+  "id": "comp_a5f292cc",
+  "source": {
+    "url": "https://www.nicobar.com",
+    "type": "curated_d2c",
+    "vertical": "general"
+  },
+  "sections": [
+    {
+      "type": "trust_bar",
+      "confidence": 0.7,
+      "position": 0,
+      "is_dark": false,
+      "height_ratio": 0.03694581280788178,
+      "content_hints": {
+        "heading": "Get on the list",
+        "product_count": 4,
+        "has_carousel": true,
+        "grid_columns": 1
+      }
+    },
+    {
+      "type": "newsletter",
+      "confidence": 0.75,
+      "position": 1,
+      "is_dark": false,
+      "height_ratio": 0,
+      "content_hints": {
+        "heading": "Hurray!",
+        "product_count": 5,
+        "has_carousel": false,
+        "grid_columns": 1
+      }
+    },
+    {
+      "type": "product_carousel",
+      "detected_variant": "standard",
+      "confidence": 0.5,
+      "position": 2,
+      "is_dark": false,
+      "height_ratio": 0,
+      "content_hints": {
+        "has_carousel": true,
+        "grid_columns": 1
+      }
+    },
+    {
+      "type": "newsletter",
+      "confidence": 0.75,
+      "position": 3,
+      "is_dark": false,
+      "height_ratio": 0,
+      "content_hints": {
+        "heading": "Hurray!",
+        "product_count": 5,
+        "has_carousel": false,
+        "grid_columns": 1
+      }
+    },
+    {
+      "type": "about_brand",
+      "confidence": 0.6,
+      "position": 4,
+      "is_dark": false,
+      "height_ratio": 0,
+      "content_hints": {
+        "heading": "Enjoy 10% off on your first online order",
+        "has_carousel": false,
+        "grid_columns": 1
+      }
+    },
+    {
+      "type": "trust_bar",
+      "confidence": 0.7,
+      "position": 5,
+      "is_dark": false,
+      "height_ratio": 0.03694581280788178,
+      "content_hints": {
+        "heading": "Get on the list",
+        "product_count": 4,
+        "has_carousel": true,
+        "grid_columns": 1
+      }
+    }
+  ],
+  "palette": {
+    "background": "#ffca44",
+    "surface": "#ffffff",
+    "text_primary": "#424854",
+    "text_secondary": "#5c6670",
+    "accent": "#2d333d",
+    "dark_bg": "#252525",
+    "is_dark_theme": false,
+    "proportions": [
+      {
+        "hex": "#ffca44",
+        "proportion": 0.5315466219988833,
+        "role": "background"
+      },
+      {
+        "hex": "#ffffff",
+        "proportion": 0.2847571189279732,
+        "role": "surface"
+      },
+      {
+        "hex": "#252525",
+        "proportion": 0.18369625907314352,
+        "role": "dark_sections"
+      }
+    ],
+    "indian_color_signals": {
+      "has_gold": false,
+      "gold_proportion": 0.15946398659966496,
+      "has_maroon": false,
+      "maroon_proportion": 0,
+      "has_saffron": false,
+      "has_deep_green": false
+    }
+  },
+  "typography": {
+    "heading_font": "EuclidFlex",
+    "body_font": "EuclidFlex",
+    "closest_pairing_id": "fp_20"
+  },
+  "quality_score": 100,
+  "section_count": 6,
+  "dark_section_rhythm": "LLLLLL",
+  "tags": [
+    "carousel"
+  ],
+  "crawled_at": "2026-03-02T21:45:56.150Z"
+}

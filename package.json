@@ -1,0 +1,25 @@
+{
+  "name": "tatparya-composition-engine",
+  "version": "3.0.0",
+  "description": "Standalone design intelligence pipeline — crawls e-commerce stores, extracts design DNA, outputs composition archetypes",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "crawl:single": "tsx scripts/run-single-store.ts",
+    "crawl:full": "tsx scripts/run-full-pipeline.ts",
+    "inspect:archetypes": "tsx scripts/inspect-archetypes.ts",
+    "validate:library": "tsx scripts/validate-library.ts",
+    "review:flagged": "tsx scripts/review-flagged.ts",
+    "scrape:themes": "tsx sources/scrape-theme-store.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "puppeteer": "^23.0.0",
+    "sharp": "^0.33.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

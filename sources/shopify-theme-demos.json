@@ -1,0 +1,166 @@
+[
+  { "url": "https://dawn-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "dawn", "preset_name": "Default" },
+  { "url": "https://horizon-theme-original.myshopify.com", "source": "shopify_theme_demo", "theme_name": "horizon", "preset_name": "Default" },
+  { "url": "https://craft-theme-default.myshopify.com", "source": "shopify_theme_demo", "theme_name": "craft", "preset_name": "Default" },
+  { "url": "https://refresh-theme-default.myshopify.com", "source": "shopify_theme_demo", "theme_name": "refresh", "preset_name": "Default" },
+  { "url": "https://sense-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "sense", "preset_name": "Default" },
+  { "url": "https://crave-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "crave", "preset_name": "Default" },
+  { "url": "https://studio-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "studio", "preset_name": "Default" },
+  { "url": "https://colorblock-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "colorblock", "preset_name": "Default" },
+  { "url": "https://taste-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "taste", "preset_name": "Default" },
+  { "url": "https://ride-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "ride", "preset_name": "Default" },
+  { "url": "https://origin-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "origin", "preset_name": "Default" },
+  { "url": "https://spotlight-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "spotlight", "preset_name": "Default" },
+
+  { "url": "https://prestige-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "prestige", "preset_name": "Default" },
+  { "url": "https://prestige-theme-allure.myshopify.com", "source": "shopify_theme_demo", "theme_name": "prestige", "preset_name": "Allure" },
+  { "url": "https://prestige-theme-couture.myshopify.com", "source": "shopify_theme_demo", "theme_name": "prestige", "preset_name": "Couture" },
+
+  { "url": "https://impulse-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "impulse", "preset_name": "Default" },
+  { "url": "https://impulse-theme-modern.myshopify.com", "source": "shopify_theme_demo", "theme_name": "impulse", "preset_name": "Modern" },
+  { "url": "https://impulse-theme-bold.myshopify.com", "source": "shopify_theme_demo", "theme_name": "impulse", "preset_name": "Bold" },
+
+  { "url": "https://motion-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "motion", "preset_name": "Default" },
+  { "url": "https://motion-theme-classic.myshopify.com", "source": "shopify_theme_demo", "theme_name": "motion", "preset_name": "Classic" },
+  { "url": "https://motion-theme-elegant.myshopify.com", "source": "shopify_theme_demo", "theme_name": "motion", "preset_name": "Elegant" },
+
+  { "url": "https://broadcast-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "broadcast", "preset_name": "Default" },
+  { "url": "https://broadcast-theme-clean.myshopify.com", "source": "shopify_theme_demo", "theme_name": "broadcast", "preset_name": "Clean" },
+  { "url": "https://broadcast-theme-bold.myshopify.com", "source": "shopify_theme_demo", "theme_name": "broadcast", "preset_name": "Bold" },
+
+  { "url": "https://enterprise-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "enterprise", "preset_name": "Default" },
+  { "url": "https://enterprise-theme-bold.myshopify.com", "source": "shopify_theme_demo", "theme_name": "enterprise", "preset_name": "Bold" },
+
+  { "url": "https://pipeline-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "pipeline", "preset_name": "Default" },
+  { "url": "https://pipeline-theme-bright.myshopify.com", "source": "shopify_theme_demo", "theme_name": "pipeline", "preset_name": "Bright" },
+  { "url": "https://pipeline-theme-dark.myshopify.com", "source": "shopify_theme_demo", "theme_name": "pipeline", "preset_name": "Dark" },
+
+  { "url": "https://symmetry-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "symmetry", "preset_name": "Default" },
+  { "url": "https://symmetry-theme-chantilly.myshopify.com", "source": "shopify_theme_demo", "theme_name": "symmetry", "preset_name": "Chantilly" },
+  { "url": "https://symmetry-theme-salt-yard.myshopify.com", "source": "shopify_theme_demo", "theme_name": "symmetry", "preset_name": "Salt Yard" },
+  { "url": "https://symmetry-theme-duke.myshopify.com", "source": "shopify_theme_demo", "theme_name": "symmetry", "preset_name": "Duke" },
+
+  { "url": "https://warehouse-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "warehouse", "preset_name": "Default" },
+  { "url": "https://warehouse-theme-metal.myshopify.com", "source": "shopify_theme_demo", "theme_name": "warehouse", "preset_name": "Metal" },
+  { "url": "https://warehouse-theme-wood.myshopify.com", "source": "shopify_theme_demo", "theme_name": "warehouse", "preset_name": "Wood" },
+
+  { "url": "https://testament-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "testament", "preset_name": "Default" },
+  { "url": "https://testament-theme-bold.myshopify.com", "source": "shopify_theme_demo", "theme_name": "testament", "preset_name": "Bold" },
+  { "url": "https://testament-theme-playful.myshopify.com", "source": "shopify_theme_demo", "theme_name": "testament", "preset_name": "Playful" },
+
+  { "url": "https://empire-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "empire", "preset_name": "Default" },
+  { "url": "https://empire-theme-graphic.myshopify.com", "source": "shopify_theme_demo", "theme_name": "empire", "preset_name": "Graphic" },
+
+  { "url": "https://icon-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "icon", "preset_name": "Default" },
+  { "url": "https://icon-theme-christian.myshopify.com", "source": "shopify_theme_demo", "theme_name": "icon", "preset_name": "Christian" },
+
+  { "url": "https://parallax-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "parallax", "preset_name": "Default" },
+  { "url": "https://parallax-theme-vienna.myshopify.com", "source": "shopify_theme_demo", "theme_name": "parallax", "preset_name": "Vienna" },
+  { "url": "https://parallax-theme-aspen.myshopify.com", "source": "shopify_theme_demo", "theme_name": "parallax", "preset_name": "Aspen" },
+  { "url": "https://parallax-theme-madrid.myshopify.com", "source": "shopify_theme_demo", "theme_name": "parallax", "preset_name": "Madrid" },
+
+  { "url": "https://flow-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "flow", "preset_name": "Default" },
+  { "url": "https://flow-theme-byron.myshopify.com", "source": "shopify_theme_demo", "theme_name": "flow", "preset_name": "Byron" },
+  { "url": "https://flow-theme-queenstown.myshopify.com", "source": "shopify_theme_demo", "theme_name": "flow", "preset_name": "Queenstown" },
+
+  { "url": "https://stiletto-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "stiletto", "preset_name": "Default" },
+  { "url": "https://stiletto-theme-editorial.myshopify.com", "source": "shopify_theme_demo", "theme_name": "stiletto", "preset_name": "Editorial" },
+
+  { "url": "https://reformation-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "reformation", "preset_name": "Default" },
+  { "url": "https://reformation-theme-clean.myshopify.com", "source": "shopify_theme_demo", "theme_name": "reformation", "preset_name": "Clean" },
+  { "url": "https://reformation-theme-bold.myshopify.com", "source": "shopify_theme_demo", "theme_name": "reformation", "preset_name": "Bold" },
+
+  { "url": "https://blum-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "blum", "preset_name": "Default" },
+  { "url": "https://blum-theme-shimmer.myshopify.com", "source": "shopify_theme_demo", "theme_name": "blum", "preset_name": "Shimmer" },
+
+  { "url": "https://beyond-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "beyond", "preset_name": "Default" },
+  { "url": "https://beyond-theme-bold.myshopify.com", "source": "shopify_theme_demo", "theme_name": "beyond", "preset_name": "Bold" },
+
+  { "url": "https://context-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "context", "preset_name": "Default" },
+  { "url": "https://context-theme-chic.myshopify.com", "source": "shopify_theme_demo", "theme_name": "context", "preset_name": "Chic" },
+
+  { "url": "https://impact-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "impact", "preset_name": "Default" },
+  { "url": "https://impact-theme-sound.myshopify.com", "source": "shopify_theme_demo", "theme_name": "impact", "preset_name": "Sound" },
+  { "url": "https://impact-theme-graphic.myshopify.com", "source": "shopify_theme_demo", "theme_name": "impact", "preset_name": "Graphic" },
+
+  { "url": "https://focal-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "focal", "preset_name": "Default" },
+  { "url": "https://focal-theme-carbon.myshopify.com", "source": "shopify_theme_demo", "theme_name": "focal", "preset_name": "Carbon" },
+  { "url": "https://focal-theme-powder.myshopify.com", "source": "shopify_theme_demo", "theme_name": "focal", "preset_name": "Powder" },
+
+  { "url": "https://edition-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "edition", "preset_name": "Default" },
+  { "url": "https://edition-theme-bold.myshopify.com", "source": "shopify_theme_demo", "theme_name": "edition", "preset_name": "Bold" },
+
+  { "url": "https://expanse-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "expanse", "preset_name": "Default" },
+  { "url": "https://expanse-theme-classic.myshopify.com", "source": "shopify_theme_demo", "theme_name": "expanse", "preset_name": "Classic" },
+  { "url": "https://expanse-theme-modern.myshopify.com", "source": "shopify_theme_demo", "theme_name": "expanse", "preset_name": "Modern" },
+
+  { "url": "https://label-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "label", "preset_name": "Default" },
+  { "url": "https://label-theme-record.myshopify.com", "source": "shopify_theme_demo", "theme_name": "label", "preset_name": "Record" },
+
+  { "url": "https://envy-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "envy", "preset_name": "Default" },
+  { "url": "https://envy-theme-oslo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "envy", "preset_name": "Oslo" },
+  { "url": "https://envy-theme-stockholm.myshopify.com", "source": "shopify_theme_demo", "theme_name": "envy", "preset_name": "Stockholm" },
+
+  { "url": "https://lorenza-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "lorenza", "preset_name": "Default" },
+  { "url": "https://lorenza-theme-elegant.myshopify.com", "source": "shopify_theme_demo", "theme_name": "lorenza", "preset_name": "Elegant" },
+
+  { "url": "https://split-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "split", "preset_name": "Default" },
+  { "url": "https://split-theme-cuber.myshopify.com", "source": "shopify_theme_demo", "theme_name": "split", "preset_name": "Cuber" },
+
+  { "url": "https://fetch-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "fetch", "preset_name": "Default" },
+  { "url": "https://fetch-theme-cute.myshopify.com", "source": "shopify_theme_demo", "theme_name": "fetch", "preset_name": "Cute" },
+
+  { "url": "https://publisher-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "publisher", "preset_name": "Default" },
+  { "url": "https://publisher-theme-editorial.myshopify.com", "source": "shopify_theme_demo", "theme_name": "publisher", "preset_name": "Editorial" },
+
+  { "url": "https://spark-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "spark", "preset_name": "Default" },
+
+  { "url": "https://palo-alto-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "palo-alto", "preset_name": "Default" },
+  { "url": "https://palo-alto-theme-stanford.myshopify.com", "source": "shopify_theme_demo", "theme_name": "palo-alto", "preset_name": "Stanford" },
+
+  { "url": "https://bullet-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "bullet", "preset_name": "Default" },
+  { "url": "https://bullet-theme-sharp.myshopify.com", "source": "shopify_theme_demo", "theme_name": "bullet", "preset_name": "Sharp" },
+
+  { "url": "https://be-yours-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "be-yours", "preset_name": "Default" },
+  { "url": "https://be-yours-theme-bold.myshopify.com", "source": "shopify_theme_demo", "theme_name": "be-yours", "preset_name": "Bold" },
+
+  { "url": "https://canopy-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "canopy", "preset_name": "Default" },
+
+  { "url": "https://mr-parker-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "mr-parker", "preset_name": "Default" },
+
+  { "url": "https://story-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "story", "preset_name": "Default" },
+
+  { "url": "https://colors-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "colors", "preset_name": "Default" },
+
+  { "url": "https://avenue-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "avenue", "preset_name": "Default" },
+
+  { "url": "https://showcase-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "showcase", "preset_name": "Default" },
+
+  { "url": "https://reign-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "reign", "preset_name": "Default" },
+
+  { "url": "https://masonry-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "masonry", "preset_name": "Default" },
+
+  { "url": "https://baseline-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "baseline", "preset_name": "Default" },
+
+  { "url": "https://foodie-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "foodie", "preset_name": "Default" },
+
+  { "url": "https://district-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "district", "preset_name": "Default" },
+
+  { "url": "https://blockshop-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "blockshop", "preset_name": "Default" },
+
+  { "url": "https://capital-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "capital", "preset_name": "Default" },
+
+  { "url": "https://retina-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "retina", "preset_name": "Default" },
+
+  { "url": "https://atlantic-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "atlantic", "preset_name": "Default" },
+
+  { "url": "https://streamline-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "streamline", "preset_name": "Default" },
+
+  { "url": "https://vogue-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "vogue", "preset_name": "Default" },
+
+  { "url": "https://launch-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "launch", "preset_name": "Default" },
+
+  { "url": "https://local-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "local", "preset_name": "Default" },
+
+  { "url": "https://responsive-theme-demo.myshopify.com", "source": "shopify_theme_demo", "theme_name": "responsive", "preset_name": "Default" }
+]
