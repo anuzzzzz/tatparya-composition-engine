@@ -2,6 +2,9 @@
 // Crawler — Dual-Viewport Orchestrator
 // Manages the URL queue, loads pages at 375px + 1440px,
 // injects the extractor, and produces CrawlResult objects.
+//
+// FIX v3: Waits for structural readiness (footer or main content)
+//         before scrolling. Longer post-scroll settle for hydration.
 // ═══════════════════════════════════════════════════════════════
 
 import puppeteer, { type Browser, type Page } from 'puppeteer';
@@ -106,6 +109,42 @@ export class Crawler {
 
   // ── Private ──
 
+  /**
+   * Wait for the page to be structurally ready.
+   * Instead of relying solely on networkidle2, we wait for key DOM
+   * elements that indicate the page has actually rendered its content.
+   */
+  private async waitForStructuralReadiness(page: Page): Promise<void> {
+    // Strategy: wait for ANY of these structural markers (whichever appears first)
+    // These indicate the page has rendered beyond just the initial shell.
+    const structuralSelectors = [
+      'footer',                       // Footer means full page rendered
+      '#shopify-section-footer',      // Shopify-specific footer
+      '[class*="footer"]',            // Generic footer class
+      'main > *:nth-child(3)',        // At least 3 children in main = content loaded
+      '#MainContent > *:nth-child(3)',// Shopify main content
+      '[data-section-type]',          // Shopify section markers
+      '.shopify-section:nth-of-type(4)', // At least 4 Shopify sections
+    ];
+
+    try {
+      await Promise.race([
+        // Wait for any structural marker
+        ...structuralSelectors.map(sel =>
+          page.waitForSelector(sel, { timeout: 10000 }).catch(() => null)
+        ),
+        // Fallback: just wait 5s if nothing appears
+        new Promise(r => setTimeout(r, 5000)),
+      ]);
+    } catch {
+      // If all selectors timeout, continue anyway
+      console.log('[Crawler] Structural readiness timeout — proceeding with what we have');
+    }
+
+    // Extra breathing room for React/Next.js hydration
+    await new Promise(r => setTimeout(r, 1500));
+  }
+
   private async crawlViewport(
     target: CrawlTarget,
     viewport: Viewport
@@ -119,19 +158,30 @@ export class Crawler {
         await page.setUserAgent(MOBILE_UA);
       }
 
+      // Load the page
       await page.goto(target.url, { waitUntil: 'networkidle2', timeout: 30000 });
+
+      // Wait for structural readiness (not just network idle)
+      await this.waitForStructuralReadiness(page);
 
       // Kill modals BEFORE extraction (pass 1)
       await killModalsAndPopups(page);
 
       // Auto-scroll to trigger lazy loading
+      // (auto-scroll now re-checks scrollHeight dynamically)
       await autoScroll(page);
 
-      // Wait for post-scroll rendering
-      await new Promise(r => setTimeout(r, 1000));
+      // Post-scroll settle — give IntersectionObservers and
+      // lazy hydration time to fire after scroll completes
+      await new Promise(r => setTimeout(r, 2000));
 
       // Kill modals AGAIN (pass 2 — some trigger on scroll/delay)
       await killModalsAndPopups(page);
+
+      // Final readiness check: wait for any new sections that
+      // appeared during scrolling to finish rendering
+      await page.evaluate('new Promise(function(r){requestAnimationFrame(function(){requestAnimationFrame(r)})})');
+
 
       // Inject extractor and run
       // We use addScriptTag to inject the extractor as raw JS, avoiding

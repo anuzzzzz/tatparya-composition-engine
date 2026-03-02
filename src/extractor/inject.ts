@@ -4,8 +4,13 @@
 // Injected via page.addScriptTag({ content: ... }) then invoked
 // via page.evaluate('extractDesignDNA()'). Plain JS, no TypeScript.
 //
-// FIX v2: Filters hidden/zero-height sections BEFORE classification,
-//         so position indices are accurate for hero detection.
+// FIX v3:
+//   - isVisibleSection: relaxed (only display:none, hidden, opacity:0, height<10)
+//   - looksLikePopup: targeted (z-index>100 + fixed/abs + popup classes)
+//   - extractSections: 3-tier strategy:
+//     1. .shopify-section (standard Shopify)
+//     2. direct children of main/body (legacy)
+//     3. deep scan for full-width block-level elements (React/headless)
 // ═══════════════════════════════════════════════════════════════
 
 export function getExtractorScript(): string {
@@ -109,32 +114,119 @@ function classifySection(el,si) {
 
 function isVisibleSection(el) {
   var style = getComputedStyle(el);
-  if (style.display === 'none' || style.visibility === 'hidden') return false;
-  var rect = el.getBoundingClientRect();
-  if (rect.height < 30) return false;
-  if (rect.width < window.innerWidth * 0.3) return false;
+  if (style.display === 'none') return false;
+  if (style.visibility === 'hidden') return false;
   if (style.opacity === '0') return false;
-  if (style.position === 'fixed' || style.position === 'absolute') {
-    var z = parseInt(style.zIndex);
-    if (z > 100) return false;
-  }
+  var rect = el.getBoundingClientRect();
+  if (rect.height < 10) return false;
   return true;
+}
+
+function looksLikePopup(el) {
+  var style = getComputedStyle(el);
+  var z = parseInt(style.zIndex) || 0;
+  if (z <= 100) return false;
+  if (style.position !== 'fixed' && style.position !== 'absolute') return false;
+  var rect = el.getBoundingClientRect();
+  var vpArea = window.innerWidth * window.innerHeight;
+  var elArea = rect.width * rect.height;
+  if (elArea > vpArea * 0.5) return true;
+  var id = (el.id || '').toLowerCase();
+  var cls = (el.className || '').toString().toLowerCase();
+  if (id.match(/popup|modal|overlay/) || cls.match(/popup|modal|overlay|klaviyo|privy|omnisend/)) return true;
+  return false;
+}
+
+function findDeepSections(container) {
+  var allEls = Array.from(container.querySelectorAll('section, [data-section-type], [class*="section"], [class*="Section"], article'));
+  var candidates = allEls.filter(function(el) {
+    var rect = el.getBoundingClientRect();
+    var style = getComputedStyle(el);
+    return rect.width > window.innerWidth * 0.7 &&
+           rect.height > 80 &&
+           style.display !== 'none' &&
+           style.visibility !== 'hidden' &&
+           style.opacity !== '0';
+  });
+  if (candidates.length < 3) {
+    var mainEl = container.querySelector('main') || container.querySelector('[role="main"]') || container.querySelector('#MainContent') || container;
+    var stack = [mainEl];
+    var checked = new Set();
+    candidates = [];
+    while (stack.length > 0) {
+      var current = stack.pop();
+      if (checked.has(current)) continue;
+      checked.add(current);
+      var children = Array.from(current.children).filter(function(ch) {
+        var r = ch.getBoundingClientRect();
+        var s = getComputedStyle(ch);
+        return r.height > 50 && r.width > window.innerWidth * 0.5 && s.display !== 'none';
+      });
+      if (children.length === 1 && children[0].children.length > 1) {
+        stack.push(children[0]);
+      } else if (children.length > 1) {
+        candidates = children.filter(function(ch) {
+          var r = ch.getBoundingClientRect();
+          return r.height > 80 && r.width > window.innerWidth * 0.7;
+        });
+        if (candidates.length >= 2) break;
+        stack.push(children[0]);
+      }
+    }
+  }
+  var filtered = candidates.filter(function(cand) {
+    return !candidates.some(function(other) {
+      return other !== cand && cand.contains(other);
+    });
+  });
+  return filtered.length >= 2 ? filtered : candidates;
 }
 
 function extractSections(){
   var sections=[];
+
+  // Strategy 1: Standard .shopify-section elements
   var ss=document.querySelectorAll('.shopify-section');
-  var visible = ss.length > 0
-    ? Array.from(ss).filter(isVisibleSection)
-    : [];
-  if(visible.length>0){
-    visible.forEach(function(s,i){sections.push(analyzeSection(s,i,'shopify'));});
-  } else {
-    var main=document.querySelector('main')||document.querySelector('[role="main"]')||document.querySelector('#MainContent')||document.body;
-    Array.from(main.children).filter(function(el){return isVisibleSection(el);}).forEach(function(s,i){sections.push(analyzeSection(s,i,'heuristic'));});
+  if(ss.length>0){
+    Array.from(ss).forEach(function(s){
+      if (!isVisibleSection(s)) return;
+      if (looksLikePopup(s)) return;
+      sections.push(analyzeSection(s, sections.length, 'shopify'));
+    });
   }
+
+  // Strategy 2: Direct children of main (legacy / simple themes)
+  if(sections.length < 3){
+    var main=document.querySelector('main')||document.querySelector('[role="main"]')||document.querySelector('#MainContent');
+    if(main){
+      var directKids = Array.from(main.children).filter(function(el){
+        return isVisibleSection(el) && !looksLikePopup(el) && el.getBoundingClientRect().height > 50;
+      });
+      if(directKids.length >= 3){
+        sections = [];
+        directKids.forEach(function(s){
+          sections.push(analyzeSection(s, sections.length, 'heuristic'));
+        });
+      }
+    }
+  }
+
+  // Strategy 3: Deep scan for section-like elements (React/headless/custom themes)
+  if(sections.length < 3){
+    var deep = findDeepSections(document.body);
+    if(deep.length >= 2){
+      sections = [];
+      deep.forEach(function(s){
+        if (!isVisibleSection(s)) return;
+        if (looksLikePopup(s)) return;
+        sections.push(analyzeSection(s, sections.length, 'deep_scan'));
+      });
+    }
+  }
+
   return sections;
 }
+
 function analyzeSection(el,index,method){
   var rect=el.getBoundingClientRect();var style=getComputedStyle(el);var st=classifySection(el,index);
   return{index:index,method:method,shopify_id:el.id||null,detected_type:st.type,confidence:st.confidence,height_px:rect.height,width_px:rect.width,is_full_width:rect.width>=window.innerWidth*0.95,viewport_ratio:rect.height/window.innerHeight,background_color:style.backgroundColor,background_image:style.backgroundImage!=='none'?style.backgroundImage:null,is_dark:isDarkBg(style.backgroundColor),padding_top:parseInt(style.paddingTop),padding_bottom:parseInt(style.paddingBottom),has_images:el.querySelectorAll('img').length,has_buttons:el.querySelectorAll('a,button').length,heading_text:getFirstHeading(el),text_content_length:el.textContent.trim().length,grid_columns:detectGridColumns(el),has_carousel:detectCarousel(el),has_video:!!(el.querySelector('video,iframe[src*="youtube"],iframe[src*="vimeo"]'))};
@@ -173,7 +265,14 @@ function extractTypography(){
 }
 
 function extractLayout(){
-  var ss=Array.from(document.querySelectorAll('.shopify-section')).filter(isVisibleSection);
+  var ss=Array.from(document.querySelectorAll('.shopify-section')).filter(function(el){ return isVisibleSection(el) && !looksLikePopup(el); });
+  if (ss.length < 3) {
+    var main = document.querySelector('main') || document.querySelector('[role="main"]') || document.querySelector('#MainContent');
+    if (main) {
+      var kids = Array.from(main.children).filter(function(el) { return isVisibleSection(el); });
+      if (kids.length >= ss.length) ss = kids;
+    }
+  }
   var md=document.querySelector('meta[name="description"]');
   return{title:document.title||'',metaDescription:md?md.getAttribute('content')||'':'',total_sections:ss.length,totalHeight:document.body.scrollHeight,viewport_height:window.innerHeight,section_heights:ss.map(function(s){return{id:s.id,height:s.getBoundingClientRect().height,viewport_ratio:s.getBoundingClientRect().height/window.innerHeight};}),dark_light_pattern:ss.map(function(s){return isDarkBg(getComputedStyle(s).backgroundColor)?'D':'L';}).join(''),full_width_ratio:ss.length>0?ss.filter(function(s){return s.getBoundingClientRect().width>=window.innerWidth*0.95;}).length/ss.length:0};
 }
