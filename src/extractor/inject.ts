@@ -3,6 +3,9 @@
 //
 // Injected via page.addScriptTag({ content: ... }) then invoked
 // via page.evaluate('extractDesignDNA()'). Plain JS, no TypeScript.
+//
+// FIX v2: Filters hidden/zero-height sections BEFORE classification,
+//         so position indices are accurate for hero detection.
 // ═══════════════════════════════════════════════════════════════
 
 export function getExtractorScript(): string {
@@ -104,12 +107,32 @@ function classifySection(el,si) {
   return {type:best,confidence:Math.min(bs/100,1.0)};
 }
 
+function isVisibleSection(el) {
+  var style = getComputedStyle(el);
+  if (style.display === 'none' || style.visibility === 'hidden') return false;
+  var rect = el.getBoundingClientRect();
+  if (rect.height < 30) return false;
+  if (rect.width < window.innerWidth * 0.3) return false;
+  if (style.opacity === '0') return false;
+  if (style.position === 'fixed' || style.position === 'absolute') {
+    var z = parseInt(style.zIndex);
+    if (z > 100) return false;
+  }
+  return true;
+}
+
 function extractSections(){
   var sections=[];
   var ss=document.querySelectorAll('.shopify-section');
-  if(ss.length>0){ss.forEach(function(s,i){sections.push(analyzeSection(s,i,'shopify'));});}
-  else{var main=document.querySelector('main')||document.querySelector('[role="main"]')||document.querySelector('#MainContent')||document.body;
-    Array.from(main.children).filter(function(el){var s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&el.getBoundingClientRect().height>50&&el.getBoundingClientRect().width>window.innerWidth*0.5;}).forEach(function(s,i){sections.push(analyzeSection(s,i,'heuristic'));});}
+  var visible = ss.length > 0
+    ? Array.from(ss).filter(isVisibleSection)
+    : [];
+  if(visible.length>0){
+    visible.forEach(function(s,i){sections.push(analyzeSection(s,i,'shopify'));});
+  } else {
+    var main=document.querySelector('main')||document.querySelector('[role="main"]')||document.querySelector('#MainContent')||document.body;
+    Array.from(main.children).filter(function(el){return isVisibleSection(el);}).forEach(function(s,i){sections.push(analyzeSection(s,i,'heuristic'));});
+  }
   return sections;
 }
 function analyzeSection(el,index,method){
@@ -150,7 +173,7 @@ function extractTypography(){
 }
 
 function extractLayout(){
-  var ss=Array.from(document.querySelectorAll('.shopify-section'));
+  var ss=Array.from(document.querySelectorAll('.shopify-section')).filter(isVisibleSection);
   var md=document.querySelector('meta[name="description"]');
   return{title:document.title||'',metaDescription:md?md.getAttribute('content')||'':'',total_sections:ss.length,totalHeight:document.body.scrollHeight,viewport_height:window.innerHeight,section_heights:ss.map(function(s){return{id:s.id,height:s.getBoundingClientRect().height,viewport_ratio:s.getBoundingClientRect().height/window.innerHeight};}),dark_light_pattern:ss.map(function(s){return isDarkBg(getComputedStyle(s).backgroundColor)?'D':'L';}).join(''),full_width_ratio:ss.length>0?ss.filter(function(s){return s.getBoundingClientRect().width>=window.innerWidth*0.95;}).length/ss.length:0};
 }

@@ -4,10 +4,8 @@
 // Mobile is the source of truth for "required" — if a section is
 // hidden on mobile, Indian buyers won't see it.
 //
-// Features:
-// - Visual Prominence Scoring (mobile fold is king)
-// - Responsive Variant Detection (desktop grid → mobile carousel)
-// - Primary Hero Candidate tagging
+// FIX v2: Matches sections by position proximity + type similarity
+//         instead of just type, preventing duplicate-type confusion.
 // ═══════════════════════════════════════════════════════════════
 
 import type { ViewportExtraction, ReconciledSection, RawSection } from '../shared/types.js';
@@ -18,12 +16,10 @@ export function reconcileViewports(
 ): ReconciledSection[] {
   const reconciled: ReconciledSection[] = [];
 
-  const mobileSectionTypes = new Set(mobile.sections.map(s => s.detected_type));
-  const desktopSectionTypes = new Set(desktop.sections.map(s => s.detected_type));
+  // Track which mobile sections have been claimed
+  const claimedMobile = new Set<number>();
 
   // ── Visual Prominence Scoring ──
-  // Calculate which mobile section dominates the fold.
-  // Score = viewport_ratio × position_decay (earlier = more prominent)
   let primaryHeroCandidateIdx = -1;
   let maxProminence = 0;
 
@@ -36,15 +32,42 @@ export function reconcileViewports(
     }
   });
 
-  // Walk through desktop sections in order
-  let mobileIdx = 0;
-  for (const dSection of desktop.sections) {
-    const onMobile = mobileSectionTypes.has(dSection.detected_type);
+  // Normalize positions to 0-1 range for matching
+  const dTotal = Math.max(desktop.sections.length, 1);
+  const mTotal = Math.max(mobile.sections.length, 1);
 
-    // Find the corresponding mobile section
-    const mSection = mobile.sections.find(
-      (s, i) => s.detected_type === dSection.detected_type && i >= mobileIdx
-    );
+  // Walk through desktop sections in order
+  for (let di = 0; di < desktop.sections.length; di++) {
+    const dSection = desktop.sections[di];
+    const dNormPos = di / dTotal;
+
+    // Find the best matching mobile section:
+    // 1. Same type + closest position (best match)
+    // 2. Same type anywhere (fallback)
+    // 3. No match (desktop-only)
+    let bestMobileIdx = -1;
+    let bestScore = -1;
+
+    for (let mi = 0; mi < mobile.sections.length; mi++) {
+      if (claimedMobile.has(mi)) continue;
+      const mSection = mobile.sections[mi];
+
+      // Type must match for pairing
+      if (mSection.detected_type !== dSection.detected_type) continue;
+
+      // Score: closer position = better match
+      const mNormPos = mi / mTotal;
+      const posDist = Math.abs(dNormPos - mNormPos);
+      const score = 1 - posDist; // 1.0 = same relative position, 0.0 = opposite ends
+
+      if (score > bestScore) {
+        bestScore = score;
+        bestMobileIdx = mi;
+      }
+    }
+
+    const mSection = bestMobileIdx >= 0 ? mobile.sections[bestMobileIdx] : null;
+    if (bestMobileIdx >= 0) claimedMobile.add(bestMobileIdx);
 
     // ── Responsive Variant Detection ──
     let responsiveVariant: ReconciledSection['responsive_variant'] = null;
@@ -71,16 +94,15 @@ export function reconcileViewports(
     }
 
     // ── Visual Prominence Tagging ──
-    const mSectionIdx = mSection ? mobile.sections.indexOf(mSection) : -1;
     const isPrimaryHeroCandidate =
-      mSectionIdx === primaryHeroCandidateIdx && maxProminence > 0.4;
+      bestMobileIdx === primaryHeroCandidateIdx && maxProminence > 0.4;
 
     reconciled.push({
       type: dSection.detected_type,
       confidence: Math.max(dSection.confidence, mSection?.confidence || 0),
       on_desktop: true,
-      on_mobile: onMobile,
-      required: onMobile && Math.max(dSection.confidence, mSection?.confidence || 0) > 0.7,
+      on_mobile: !!mSection,
+      required: !!mSection && Math.max(dSection.confidence, mSection?.confidence || 0) > 0.7,
       desktop_variant_hint: inferVariantFromRaw(dSection),
       mobile_variant_hint: mSection ? inferVariantFromRaw(mSection) : undefined,
       is_dark: dSection.is_dark || (mSection?.is_dark ?? false),
@@ -88,34 +110,34 @@ export function reconcileViewports(
       height_ratio_mobile: mSection?.viewport_ratio || 0,
       is_primary_hero_candidate: isPrimaryHeroCandidate,
       mobile_prominence_score: mSection
-        ? (mSection.viewport_ratio || 0) * (1 / (1 + mSectionIdx * 0.5))
+        ? (mSection.viewport_ratio || 0) * (1 / (1 + bestMobileIdx * 0.5))
         : 0,
       responsive_variant: responsiveVariant,
     });
   }
 
-  // Add any mobile-only sections
-  for (const mSection of mobile.sections) {
-    if (!desktopSectionTypes.has(mSection.detected_type)) {
-      const mSectionIdx = mobile.sections.indexOf(mSection);
-      reconciled.push({
-        type: mSection.detected_type,
-        confidence: mSection.confidence,
-        on_desktop: false,
-        on_mobile: true,
-        required: mSection.confidence > 0.7,
-        desktop_variant_hint: undefined,
-        mobile_variant_hint: inferVariantFromRaw(mSection),
-        is_dark: mSection.is_dark,
-        height_ratio_desktop: 0,
-        height_ratio_mobile: mSection.viewport_ratio,
-        is_primary_hero_candidate:
-          mSectionIdx === primaryHeroCandidateIdx && maxProminence > 0.4,
-        mobile_prominence_score:
-          (mSection.viewport_ratio || 0) * (1 / (1 + mSectionIdx * 0.5)),
-        responsive_variant: null,
-      });
-    }
+  // Add any unclaimed mobile-only sections
+  for (let mi = 0; mi < mobile.sections.length; mi++) {
+    if (claimedMobile.has(mi)) continue;
+
+    const mSection = mobile.sections[mi];
+    reconciled.push({
+      type: mSection.detected_type,
+      confidence: mSection.confidence,
+      on_desktop: false,
+      on_mobile: true,
+      required: mSection.confidence > 0.7,
+      desktop_variant_hint: undefined,
+      mobile_variant_hint: inferVariantFromRaw(mSection),
+      is_dark: mSection.is_dark,
+      height_ratio_desktop: 0,
+      height_ratio_mobile: mSection.viewport_ratio,
+      is_primary_hero_candidate:
+        mi === primaryHeroCandidateIdx && maxProminence > 0.4,
+      mobile_prominence_score:
+        (mSection.viewport_ratio || 0) * (1 / (1 + mi * 0.5)),
+      responsive_variant: null,
+    });
   }
 
   return reconciled;
