@@ -3,8 +3,8 @@
 // Manages the URL queue, loads pages at 375px + 1440px,
 // injects the extractor, and produces CrawlResult objects.
 //
-// FIX v3: Waits for structural readiness (footer or main content)
-//         before scrolling. Longer post-scroll settle for hydration.
+// FIX v4: Detects iframe-based page builders and flags for skip.
+//         Waits for structural readiness before extraction.
 // ═══════════════════════════════════════════════════════════════
 
 import puppeteer, { type Browser, type Page } from 'puppeteer';
@@ -50,11 +50,40 @@ export class Crawler {
     const start = Date.now();
     console.log(`[Crawler] Crawling ${target.url}`);
 
-    // Crawl both viewports sequentially (same browser, different page configs)
+    // Crawl desktop first — use it to detect iframe page builders early
     const desktop = await this.crawlViewport(target, 'desktop');
-    const mobile = await this.crawlViewport(target, 'mobile');
 
-    // Reconcile: merge desktop + mobile extractions
+    // Check for iframe page builder on desktop extraction
+    const iframeInfo = (desktop as any)._iframe_page_builder;
+    if (iframeInfo) {
+      console.log(
+        `[Crawler] ⏭️  SKIP: ${target.url} — iframe page builder detected (${iframeInfo.builder})`
+      );
+
+      // Still return a result, but with skip metadata so pipeline can handle it
+      const result: CrawlResult = {
+        target,
+        desktop,
+        mobile: desktop, // Don't waste time crawling mobile
+        reconciled_sections: [],
+        metadata: {
+          title: desktop.layout.title || '',
+          description: desktop.layout.metaDescription || '',
+          crawled_at: new Date().toISOString(),
+          load_time_ms: Date.now() - start,
+          total_height_desktop_px: desktop.layout.totalHeight,
+          total_height_mobile_px: 0,
+          skip_reason: `iframe_page_builder:${iframeInfo.builder}`,
+          iframe_builder: iframeInfo.builder,
+          iframe_src: iframeInfo.iframe_src,
+        },
+      };
+
+      return result;
+    }
+
+    // No iframe detected — proceed with mobile crawl
+    const mobile = await this.crawlViewport(target, 'mobile');
     const reconciled_sections = reconcileViewports(desktop, mobile);
 
     const result: CrawlResult = {
@@ -111,37 +140,30 @@ export class Crawler {
 
   /**
    * Wait for the page to be structurally ready.
-   * Instead of relying solely on networkidle2, we wait for key DOM
-   * elements that indicate the page has actually rendered its content.
    */
   private async waitForStructuralReadiness(page: Page): Promise<void> {
-    // Strategy: wait for ANY of these structural markers (whichever appears first)
-    // These indicate the page has rendered beyond just the initial shell.
     const structuralSelectors = [
-      'footer',                       // Footer means full page rendered
-      '#shopify-section-footer',      // Shopify-specific footer
-      '[class*="footer"]',            // Generic footer class
-      'main > *:nth-child(3)',        // At least 3 children in main = content loaded
-      '#MainContent > *:nth-child(3)',// Shopify main content
-      '[data-section-type]',          // Shopify section markers
-      '.shopify-section:nth-of-type(4)', // At least 4 Shopify sections
+      'footer',
+      '#shopify-section-footer',
+      '[class*="footer"]',
+      'main > *:nth-child(3)',
+      '#MainContent > *:nth-child(3)',
+      '[data-section-type]',
+      '.shopify-section:nth-of-type(4)',
     ];
 
     try {
       await Promise.race([
-        // Wait for any structural marker
         ...structuralSelectors.map(sel =>
           page.waitForSelector(sel, { timeout: 10000 }).catch(() => null)
         ),
-        // Fallback: just wait 5s if nothing appears
         new Promise(r => setTimeout(r, 5000)),
       ]);
     } catch {
-      // If all selectors timeout, continue anyway
-      console.log('[Crawler] Structural readiness timeout — proceeding with what we have');
+      console.log('[Crawler] Structural readiness timeout — proceeding');
     }
 
-    // Extra breathing room for React/Next.js hydration
+    // Hydration breathing room
     await new Promise(r => setTimeout(r, 1500));
   }
 
@@ -161,38 +183,33 @@ export class Crawler {
       // Load the page
       await page.goto(target.url, { waitUntil: 'networkidle2', timeout: 30000 });
 
-      // Wait for structural readiness (not just network idle)
+      // Wait for structural readiness
       await this.waitForStructuralReadiness(page);
 
       // Kill modals BEFORE extraction (pass 1)
       await killModalsAndPopups(page);
 
       // Auto-scroll to trigger lazy loading
-      // (auto-scroll now re-checks scrollHeight dynamically)
       await autoScroll(page);
 
-      // Post-scroll settle — give IntersectionObservers and
-      // lazy hydration time to fire after scroll completes
+      // Post-scroll settle
       await new Promise(r => setTimeout(r, 2000));
 
-      // Kill modals AGAIN (pass 2 — some trigger on scroll/delay)
+      // Kill modals AGAIN (pass 2)
       await killModalsAndPopups(page);
 
-      // Final readiness check: wait for any new sections that
-      // appeared during scrolling to finish rendering
+      // Final paint settle
       await page.evaluate('new Promise(function(r){requestAnimationFrame(function(){requestAnimationFrame(r)})})');
 
-
       // Inject extractor and run
-      // We use addScriptTag to inject the extractor as raw JS, avoiding
-      // esbuild's __name helper which doesn't exist in the browser context.
       await page.addScriptTag({ content: getExtractorScript() });
       const extraction: any = await page.evaluate('extractDesignDNA()');
 
       // Take full-page screenshot
       const screenshot = (await page.screenshot({ fullPage: true })) as Buffer;
 
-      return {
+      // Build the result, passing through iframe detection flag
+      const result: ViewportExtraction & { _iframe_page_builder?: any } = {
         viewport,
         sections: extraction.sections,
         palette: extraction.palette,
@@ -200,8 +217,14 @@ export class Crawler {
         layout: extraction.layout,
         screenshot,
       };
+
+      // Pass iframe flag through if detected
+      if (extraction._iframe_page_builder) {
+        (result as any)._iframe_page_builder = extraction._iframe_page_builder;
+      }
+
+      return result;
     } catch (err) {
-      // Return empty extraction on failure rather than crashing the batch
       console.error(`[Crawler] Viewport ${viewport} failed for ${target.url}: ${err}`);
       return {
         viewport,

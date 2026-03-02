@@ -4,13 +4,12 @@
 // Injected via page.addScriptTag({ content: ... }) then invoked
 // via page.evaluate('extractDesignDNA()'). Plain JS, no TypeScript.
 //
-// FIX v3:
-//   - isVisibleSection: relaxed (only display:none, hidden, opacity:0, height<10)
-//   - looksLikePopup: targeted (z-index>100 + fixed/abs + popup classes)
-//   - extractSections: 3-tier strategy:
-//     1. .shopify-section (standard Shopify)
-//     2. direct children of main/body (legacy)
-//     3. deep scan for full-width block-level elements (React/headless)
+// FIX v4:
+//   - Detects iframe-based page builders (Maker, Shogun, GemPages, PageFly)
+//   - When a .shopify-section is >2x viewport and contains an iframe,
+//     flags the extraction as _iframe_detected for pipeline skip
+//   - 3-tier section discovery for non-iframe sites
+//   - Visibility filter + popup detection
 // ═══════════════════════════════════════════════════════════════
 
 export function getExtractorScript(): string {
@@ -137,6 +136,37 @@ function looksLikePopup(el) {
   return false;
 }
 
+function detectIframePageBuilder() {
+  var shopifySections = document.querySelectorAll('.shopify-section');
+  var vh = window.innerHeight;
+  for (var i = 0; i < shopifySections.length; i++) {
+    var s = shopifySections[i];
+    var rect = s.getBoundingClientRect();
+    if (rect.height < vh * 2) continue;
+    var iframe = s.querySelector('iframe');
+    if (iframe) {
+      var iframeSrc = (iframe.src || iframe.getAttribute('src') || '').toLowerCase();
+      var sectionId = (s.id || '').toLowerCase();
+      var sectionCls = (s.className || '').toString().toLowerCase();
+      var builder = 'unknown';
+      if (iframeSrc.indexOf('maker.co') >= 0 || sectionCls.indexOf('maker') >= 0) builder = 'maker';
+      else if (iframeSrc.indexOf('shogun') >= 0 || sectionCls.indexOf('shogun') >= 0) builder = 'shogun';
+      else if (iframeSrc.indexOf('gempages') >= 0 || sectionCls.indexOf('gempages') >= 0) builder = 'gempages';
+      else if (iframeSrc.indexOf('pagefly') >= 0 || sectionCls.indexOf('pagefly') >= 0) builder = 'pagefly';
+      else if (iframeSrc.indexOf('zipify') >= 0 || sectionCls.indexOf('zipify') >= 0) builder = 'zipify';
+      else if (iframeSrc.indexOf('replo') >= 0 || sectionCls.indexOf('replo') >= 0) builder = 'replo';
+      return {
+        detected: true,
+        builder: builder,
+        iframe_src: iframeSrc.substring(0, 200),
+        section_id: s.id,
+        section_height: Math.round(rect.height)
+      };
+    }
+  }
+  return { detected: false, builder: null, iframe_src: null, section_id: null, section_height: 0 };
+}
+
 function findDeepSections(container) {
   var allEls = Array.from(container.querySelectorAll('section, [data-section-type], [class*="section"], [class*="Section"], article'));
   var candidates = allEls.filter(function(el) {
@@ -191,6 +221,9 @@ function extractSections(){
     Array.from(ss).forEach(function(s){
       if (!isVisibleSection(s)) return;
       if (looksLikePopup(s)) return;
+      // Skip mega-sections that contain iframes (page builders)
+      var rect = s.getBoundingClientRect();
+      if (rect.height > window.innerHeight * 2 && s.querySelector('iframe')) return;
       sections.push(analyzeSection(s, sections.length, 'shopify'));
     });
   }
@@ -277,6 +310,15 @@ function extractLayout(){
   return{title:document.title||'',metaDescription:md?md.getAttribute('content')||'':'',total_sections:ss.length,totalHeight:document.body.scrollHeight,viewport_height:window.innerHeight,section_heights:ss.map(function(s){return{id:s.id,height:s.getBoundingClientRect().height,viewport_ratio:s.getBoundingClientRect().height/window.innerHeight};}),dark_light_pattern:ss.map(function(s){return isDarkBg(getComputedStyle(s).backgroundColor)?'D':'L';}).join(''),full_width_ratio:ss.length>0?ss.filter(function(s){return s.getBoundingClientRect().width>=window.innerWidth*0.95;}).length/ss.length:0};
 }
 
-function extractDesignDNA(){return{sections:extractSections(),palette:extractPalette(),typography:extractTypography(),layout:extractLayout()};}
+function extractDesignDNA(){
+  var iframeCheck = detectIframePageBuilder();
+  return{
+    _iframe_page_builder: iframeCheck.detected ? iframeCheck : null,
+    sections:extractSections(),
+    palette:extractPalette(),
+    typography:extractTypography(),
+    layout:extractLayout()
+  };
+}
 `;
 }

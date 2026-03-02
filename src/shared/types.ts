@@ -141,6 +141,9 @@ export interface CrawlResult {
     load_time_ms: number;
     total_height_desktop_px: number;
     total_height_mobile_px: number;
+    skip_reason?: string;
+    iframe_builder?: string;
+    iframe_src?: string;
   };
 }
 

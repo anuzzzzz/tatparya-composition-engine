@@ -3,6 +3,9 @@
 // Run Full Pipeline
 // crawl → extract → normalize → score → validate → dedup → assemble
 // Reads URL lists from sources/, outputs composition-library.json
+//
+// FIX v4: Handles iframe page builder skips gracefully.
+//         Logs skipped stores for future iframe support.
 // ═══════════════════════════════════════════════════════════════
 
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
@@ -16,8 +19,14 @@ import { saveFlaggedComposition } from '../src/validator/index.js';
 import { assembleLibrary } from '../src/assembler/library-builder.js';
 import type { CrawlTarget, NormalizedComposition } from '../src/shared/types.js';
 
-const VISION_THRESHOLD = 40; // Only validate compositions scoring above this
+const VISION_THRESHOLD = 40;
 const ENABLE_VISION = process.env.ENABLE_VISION === 'true';
+
+interface SkippedStore {
+  url: string;
+  reason: string;
+  builder?: string;
+}
 
 async function main() {
   console.log('═══════════════════════════════════════════');
@@ -53,6 +62,7 @@ async function main() {
   await crawler.init();
 
   const compositions: NormalizedComposition[] = [];
+  const skipped: SkippedStore[] = [];
   let crawled = 0, errors = 0, validated = 0, flagged = 0;
 
   try {
@@ -61,6 +71,29 @@ async function main() {
       async (result, idx) => {
         crawled++;
         const progress = `[${crawled}/${targets.length}]`;
+
+        // Check if store was skipped (iframe page builder)
+        if ((result.metadata as any).skip_reason) {
+          const reason = (result.metadata as any).skip_reason;
+          const builder = (result.metadata as any).iframe_builder || 'unknown';
+          skipped.push({ url: result.target.url, reason, builder });
+          console.log(
+            `${progress} ⏭️  ${result.target.url} — SKIPPED (${reason})`
+          );
+          return;
+        }
+
+        // Check minimum section count — skip if extraction failed
+        if (result.reconciled_sections.length < 2) {
+          skipped.push({
+            url: result.target.url,
+            reason: `too_few_sections:${result.reconciled_sections.length}`,
+          });
+          console.log(
+            `${progress} ⏭️  ${result.target.url} — SKIPPED (only ${result.reconciled_sections.length} sections detected)`
+          );
+          return;
+        }
 
         try {
           // Pixel clustering
@@ -91,12 +124,10 @@ async function main() {
                 flagged++;
               }
 
-              // Override vertical if vision is more confident
               if (visionResult.detected_vertical && visionResult.detected_vertical !== 'general') {
                 normalized.source.vertical = visionResult.detected_vertical;
               }
 
-              // Merge vibe tags
               normalized.tags = [...new Set([...normalized.tags, ...visionResult.detected_vibe])];
             } catch (vErr) {
               console.warn(`${progress} ⚠️ Vision validation failed: ${vErr}`);
@@ -134,10 +165,17 @@ async function main() {
   mkdirSync(outDir, { recursive: true });
   writeFileSync(join(outDir, 'composition-library.json'), JSON.stringify(library, null, 2));
 
+  // Save skipped stores for future reference
+  if (skipped.length > 0) {
+    writeFileSync(join(outDir, 'skipped-stores.json'), JSON.stringify(skipped, null, 2));
+  }
+
   // Print summary
   console.log('📊 Pipeline Summary:');
   console.log(`   Stores crawled:      ${crawled}`);
   console.log(`   Crawl errors:        ${errors}`);
+  console.log(`   Skipped (iframe):    ${skipped.filter(s => s.reason.startsWith('iframe')).length}`);
+  console.log(`   Skipped (low data):  ${skipped.filter(s => s.reason.startsWith('too_few')).length}`);
   console.log(`   Compositions:        ${compositions.length}`);
   console.log(`   After quality filter: ${library.stats.compositions_after_quality_filter}`);
   console.log(`   After dedup:         ${library.stats.compositions_after_dedup}`);
@@ -150,6 +188,18 @@ async function main() {
   for (const [v, count] of Object.entries(library.stats.by_vertical)) {
     const archetypeCount = library.archetypes[v]?.length || 0;
     console.log(`     ${v}: ${count} compositions → ${archetypeCount} archetypes`);
+  }
+
+  if (skipped.length > 0) {
+    console.log(`\n   Skipped stores saved to output/skipped-stores.json`);
+    const byBuilder: Record<string, number> = {};
+    skipped.forEach(s => {
+      const b = s.builder || 'other';
+      byBuilder[b] = (byBuilder[b] || 0) + 1;
+    });
+    for (const [builder, count] of Object.entries(byBuilder)) {
+      console.log(`     ${builder}: ${count} stores`);
+    }
   }
 
   console.log(`\n💾 Saved to output/composition-library.json`);
