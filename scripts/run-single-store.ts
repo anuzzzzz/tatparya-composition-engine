@@ -58,6 +58,14 @@ async function main() {
     console.log(`   Typography: ${normalized.typography.heading_font} / ${normalized.typography.body_font}`);
     console.log(`   Palette: bg=${normalized.palette.background} accent=${normalized.palette.accent} dark=${normalized.palette.is_dark_theme}`);
 
+    // Raw section dump (temporary debug log)
+    console.log('\n=== DESKTOP RAW ===');
+    result.desktop.sections.forEach((s, i) => console.log(i, s.detected_type, 'h=' + s.height_px, 'vr=' + s.viewport_ratio, 'conf=' + s.confidence));
+    console.log('=== MOBILE RAW ===');
+    result.mobile.sections.forEach((s, i) => console.log(i, s.detected_type, 'h=' + s.height_px, 'vr=' + s.viewport_ratio, 'conf=' + s.confidence));
+    console.log('=== RECONCILED ===');
+    result.reconciled_sections.forEach((s, i) => console.log(i, s.type, 'hd=' + s.height_ratio_desktop, 'hm=' + s.height_ratio_mobile, 'hero=' + s.is_primary_hero_candidate));
+
     // Sections
     console.log('\n📋 Sections:');
     normalized.sections.forEach((s, i) => {
