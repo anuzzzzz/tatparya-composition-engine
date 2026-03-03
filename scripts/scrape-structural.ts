@@ -1,12 +1,12 @@
 #!/usr/bin/env tsx
 // ═══════════════════════════════════════════════════════════════
-// Structural Scraper v4 — TinyFish Web Agent
+// Structural Scraper v5 — TinyFish DOM Extraction
 //
-// Uses TinyFish's managed stealth browsers to bypass
-// Cloudflare/WAF and extract Shopify section structure.
+// /index.json doesn't work (Shopify serves HTML for most stores).
+// Instead, uses TinyFish to load the homepage and extract
+// .shopify-section elements directly from the rendered DOM.
 //
 // Requires: TINYFISH_API_KEY environment variable
-//   export TINYFISH_API_KEY="your-key-here"
 //
 // Usage:
 //   npx tsx scripts/scrape-structural.ts
@@ -23,40 +23,96 @@ const API_URL = 'https://agent.tinyfish.ai/v1/automation/run-sse';
 interface SectionInfo {
   id: string;
   type: string;
-  settings_keys: string[];
-  block_count: number;
-  has_settings: boolean;
+  height: number;
+  tag: string;
 }
 
 interface StructuralResult {
   url: string;
   success: boolean;
   error?: string;
-  strategy?: string;
   section_count: number;
-  section_order: string[];
   sections: SectionInfo[];
-  raw_response?: any;
+  theme_name?: string;
+  page_title?: string;
 }
 
-// Goal prompt for TinyFish — tells it exactly what JSON to return
-const DIRECT_JSON_GOAL = `
-Go to this exact URL. The page should show raw JSON data.
-Extract all the section IDs and types from the Shopify template JSON.
+// The goal: extract Shopify section structure from the rendered homepage DOM
+const EXTRACTION_GOAL = `
+You are on a Shopify store's homepage. Extract ALL elements with the CSS class "shopify-section" from the page DOM.
 
-Return this exact JSON format:
+For each .shopify-section element, extract:
+1. Its "id" attribute (e.g. "shopify-section-header", "shopify-section-template--123__hero")
+2. Its approximate height in pixels
+3. The HTML tag name (usually "div" or "section")
+
+Also extract:
+- The page title
+- The value of Shopify.theme.name from the JavaScript window object (if available)
+
+Return ONLY this JSON:
 {
-  "found_json": true/false,
-  "sections": [{"id": "string", "type": "string", "settings_keys": [], "block_count": 0}],
-  "section_order": ["id1", "id2"]
+  "page_title": "string",
+  "theme_name": "string or null",
+  "is_password_page": false,
+  "sections": [
+    {"id": "full-id-attribute", "height": 123, "tag": "div"}
+  ]
 }
 
-If it's not JSON or redirects to password page, return {"found_json": false, "reason": "description"}
+If this is a password-protected page, return:
+{"is_password_page": true, "sections": []}
+
+IMPORTANT: Return the raw JSON only, no markdown formatting, no backticks.
 `;
+
+function inferTypeFromSectionId(id: string): string {
+  const lower = id.toLowerCase();
+
+  // Strip common prefixes
+  const cleaned = lower
+    .replace('shopify-section-', '')
+    .replace(/sections--\d+__/, '')
+    .replace(/template--\d+__/, '')
+    .replace(/_[a-z0-9]{6,}$/i, ''); // strip random suffixes like _4VCgQr
+
+  if (cleaned.includes('header') || cleaned.includes('nav')) return 'header';
+  if (cleaned.includes('footer')) return 'footer';
+  if (cleaned.includes('announcement') || cleaned.includes('global-banner')) return 'announcement_bar';
+  if (cleaned.includes('hero') || cleaned.includes('full-bleed')) return 'hero';
+  if (cleaned.includes('slideshow') || cleaned.includes('slider') || cleaned.includes('carousel')) return 'slideshow';
+  if (cleaned.includes('featured') && cleaned.includes('product')) return 'featured_products';
+  if (cleaned.includes('featured') && cleaned.includes('collection')) return 'featured_collection';
+  if (cleaned.includes('collection') && cleaned.includes('list')) return 'collection_list';
+  if (cleaned.includes('collection') || cleaned.includes('category')) return 'collection';
+  if (cleaned.includes('product') && cleaned.includes('carousel')) return 'product_carousel';
+  if (cleaned.includes('product') && cleaned.includes('grid')) return 'product_grid';
+  if (cleaned.includes('product')) return 'product';
+  if (cleaned.includes('testimonial') || cleaned.includes('review')) return 'testimonials';
+  if (cleaned.includes('newsletter') || cleaned.includes('subscribe') || cleaned.includes('email')) return 'newsletter';
+  if (cleaned.includes('image') && cleaned.includes('text')) return 'image_with_text';
+  if (cleaned.includes('rich') && cleaned.includes('text')) return 'rich_text';
+  if (cleaned.includes('richtext')) return 'rich_text';
+  if (cleaned.includes('video')) return 'video';
+  if (cleaned.includes('logo') || cleaned.includes('brand')) return 'logo_bar';
+  if (cleaned.includes('blog') || cleaned.includes('article')) return 'blog';
+  if (cleaned.includes('map') || cleaned.includes('contact')) return 'contact';
+  if (cleaned.includes('cart') && cleaned.includes('drawer')) return 'cart_drawer';
+  if (cleaned.includes('cart')) return 'cart';
+  if (cleaned.includes('popup') || cleaned.includes('modal')) return 'popup';
+  if (cleaned.includes('promo') || cleaned.includes('tile')) return 'promo_tiles';
+  if (cleaned.includes('shopping') && cleaned.includes('grid')) return 'shopping_grid';
+  if (cleaned.includes('style') && cleaned.includes('panel')) return 'style_panel';
+  if (cleaned.includes('seo')) return 'seo';
+  if (cleaned.includes('geofenc') || cleaned.includes('geo')) return 'geofencing';
+  if (cleaned.includes('marquee') || cleaned.includes('ticker')) return 'marquee';
+  if (cleaned.includes('trust') || cleaned.includes('usp') || cleaned.includes('guarantee')) return 'trust_bar';
+
+  return 'unknown';
+}
 
 async function fetchWithTinyfish(url: string): Promise<StructuralResult> {
   const base = url.replace(/\/$/, '');
-  const jsonUrl = `${base}/index.json`;
 
   try {
     const response = await fetch(API_URL, {
@@ -66,21 +122,17 @@ async function fetchWithTinyfish(url: string): Promise<StructuralResult> {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        url: jsonUrl,
-        goal: DIRECT_JSON_GOAL,
+        url: base,
+        goal: EXTRACTION_GOAL,
         browser_profile: 'stealth',
       }),
     });
 
     if (!response.ok) {
-      const errorText = await response.text();
-      return {
-        url, success: false, error: `API ${response.status}: ${errorText.substring(0, 100)}`,
-        section_count: 0, section_order: [], sections: [],
-      };
+      return { url, success: false, error: `API ${response.status}`, section_count: 0, sections: [] };
     }
 
-    // Parse SSE stream
+    // Parse SSE stream — find COMPLETE event
     const text = await response.text();
     const lines = text.split('\n');
 
@@ -88,100 +140,61 @@ async function fetchWithTinyfish(url: string): Promise<StructuralResult> {
 
     for (const line of lines) {
       if (!line.startsWith('data: ')) continue;
-
       try {
         const event = JSON.parse(line.slice(6));
-
-        if (event.type === 'COMPLETE' && event.status === 'COMPLETED') {
-          resultData = event.resultJson || event.result;
+        if (event.type === 'COMPLETE' && event.status === 'COMPLETED' && event.resultJson) {
+          resultData = event.resultJson;
           break;
         }
-
-        // Also check for result in other event types
-        if (event.resultJson) {
-          resultData = event.resultJson;
-        }
-      } catch {
-        // Not JSON, skip
-      }
-    }
-
-    if (!resultData) {
-      // Try parsing the entire response as JSON
-      try {
-        const fullParse = JSON.parse(text);
-        if (fullParse.resultJson) resultData = fullParse.resultJson;
-        else if (fullParse.sections) resultData = fullParse;
       } catch {}
     }
 
     if (!resultData) {
-      return {
-        url, success: false, error: 'no_result_in_sse',
-        section_count: 0, section_order: [], sections: [],
-        raw_response: text.substring(0, 500),
-      };
+      return { url, success: false, error: 'stream_ended_without_result', section_count: 0, sections: [] };
     }
 
-    // Handle string result (TinyFish might return stringified JSON)
+    // Handle string result
     if (typeof resultData === 'string') {
-      try {
-        resultData = JSON.parse(resultData);
-      } catch {
-        return {
-          url, success: false, error: 'unparseable_result',
-          section_count: 0, section_order: [], sections: [],
-          raw_response: resultData.substring(0, 500),
-        };
+      try { resultData = JSON.parse(resultData); } catch {
+        return { url, success: false, error: 'unparseable_result', section_count: 0, sections: [] };
       }
     }
 
-    // Check if JSON was found
-    if (resultData.found_json === false) {
-      return {
-        url, success: false, error: resultData.reason || 'no_json',
-        section_count: 0, section_order: [], sections: [],
-      };
+    // Password check
+    if (resultData.is_password_page) {
+      return { url, success: false, error: 'password_protected', section_count: 0, sections: [] };
     }
 
     // Parse sections
-    const sections: SectionInfo[] = (resultData.sections || []).map((s: any) => ({
-      id: s.id || 'unknown',
-      type: s.type || 'unknown',
-      settings_keys: s.settings_keys || [],
-      block_count: s.block_count || 0,
-      has_settings: (s.settings_keys || []).length > 0,
-    }));
-
-    if (sections.length === 0) {
-      return {
-        url, success: false, error: 'no_sections_found',
-        section_count: 0, section_order: [], sections: [],
-        raw_response: resultData,
-      };
+    const rawSections = resultData.sections || [];
+    if (rawSections.length === 0) {
+      return { url, success: false, error: 'no_sections_found', section_count: 0, sections: [] };
     }
 
+    const sections: SectionInfo[] = rawSections.map((s: any) => ({
+      id: s.id || 'unknown',
+      type: inferTypeFromSectionId(s.id || ''),
+      height: s.height || 0,
+      tag: s.tag || 'div',
+    }));
+
     return {
-      url, success: true, strategy: 'tinyfish_stealth',
+      url,
+      success: true,
       section_count: sections.length,
-      section_order: resultData.section_order || sections.map(s => s.id),
       sections,
+      theme_name: resultData.theme_name || undefined,
+      page_title: resultData.page_title || undefined,
     };
 
   } catch (err: any) {
-    return {
-      url, success: false, error: err.message?.substring(0, 100),
-      section_count: 0, section_order: [], sections: [],
-    };
+    return { url, success: false, error: err.message?.substring(0, 100), section_count: 0, sections: [] };
   }
 }
 
 async function main() {
-  // Pre-flight check
   if (!TINYFISH_API_KEY) {
-    console.error('❌ TINYFISH_API_KEY is not set.');
-    console.error('   Get your key at: https://agent.tinyfish.ai/api-keys');
-    console.error('   Then: export TINYFISH_API_KEY="your-key-here"');
+    console.error('❌ TINYFISH_API_KEY not set. Get one at https://agent.tinyfish.ai/api-keys');
     process.exit(1);
   }
   console.log('✅ TINYFISH_API_KEY is set\n');
@@ -205,53 +218,46 @@ async function main() {
     }
   }
 
-  console.log(`\n📋 Fetching structural data for ${targets.length} stores via TinyFish...\n`);
+  console.log(`\n📋 Extracting section structure for ${targets.length} stores via TinyFish...\n`);
 
   const results: StructuralResult[] = [];
   let success = 0, failed = 0, passworded = 0;
 
-  // Process in small parallel batches (TinyFish handles concurrency well)
-  const batchSize = 3; // Conservative to not burn credits too fast
+  // Sequential processing (each takes ~30-60s with TinyFish)
+  for (let i = 0; i < targets.length; i++) {
+    const target = targets[i];
+    const progress = `[${i + 1}/${targets.length}]`;
 
-  for (let i = 0; i < targets.length; i += batchSize) {
-    const batch = targets.slice(i, i + batchSize);
-    const batchResults = await Promise.all(
-      batch.map(t => fetchWithTinyfish(t.url))
-    );
+    console.log(`  Requesting ${target.url}`);
+    const result = await fetchWithTinyfish(target.url);
+    results.push(result);
 
-    for (const result of batchResults) {
-      results.push(result);
-      const idx = results.length;
-      const progress = `[${idx}/${targets.length}]`;
-
-      if (result.success) {
-        success++;
-        const types = result.sections
-          .filter(s => !['popup', 'cart', 'unknown'].includes(s.type))
-          .map(s => s.type)
-          .slice(0, 8);
-        console.log(`${progress} ✅ ${result.url} — ${result.section_count} sections`);
-        if (types.length) console.log(`       ${types.join(' → ')}${result.section_count > 8 ? ' → ...' : ''}`);
-      } else if (result.error?.includes('password')) {
-        passworded++;
-        console.log(`${progress} 🔒 ${result.url}`);
-      } else {
-        failed++;
-        if (failed <= 20) console.log(`${progress} ❌ ${result.url} — ${result.error?.substring(0, 60)}`);
-      }
+    if (result.success) {
+      success++;
+      const contentSections = result.sections.filter(s =>
+        !['popup', 'cart', 'cart_drawer', 'geofencing'].includes(s.type) && s.height > 0
+      );
+      const types = contentSections.map(s => s.type).slice(0, 8);
+      console.log(`${progress} ✅ ${target.url} — ${result.section_count} sections (${contentSections.length} visible)`);
+      if (result.theme_name) console.log(`       Theme: ${result.theme_name}`);
+      if (types.length) console.log(`       ${types.join(' → ')}${contentSections.length > 8 ? ' → ...' : ''}`);
+    } else if (result.error?.includes('password')) {
+      passworded++;
+      console.log(`${progress} 🔒 ${target.url}`);
+    } else {
+      failed++;
+      console.log(`${progress} ❌ ${target.url} — ${result.error}`);
     }
 
-    // Small delay between batches
-    if (i + batchSize < targets.length) {
-      await new Promise(r => setTimeout(r, 1000));
+    // Small delay
+    if (i < targets.length - 1) {
+      await new Promise(r => setTimeout(r, 500));
     }
   }
 
-  if (failed > 20) console.log(`  ... and ${failed - 20} more failures`);
-
   // ── Summary ──
   console.log(`\n═══════════════════════════════════════════`);
-  console.log(` Structural Scrape Summary (TinyFish)`);
+  console.log(` Structural Scrape Summary`);
   console.log(`═══════════════════════════════════════════`);
   console.log(`  ✅ Success:    ${success}`);
   console.log(`  🔒 Password:   ${passworded}`);
@@ -259,43 +265,35 @@ async function main() {
   console.log(`  Total:         ${targets.length}`);
   console.log(`  Hit rate:      ${((success / targets.length) * 100).toFixed(1)}%`);
 
-  // Section type frequency
+  // Theme distribution
+  const themes: Record<string, number> = {};
+  for (const r of results) {
+    if (r.success && r.theme_name) {
+      themes[r.theme_name] = (themes[r.theme_name] || 0) + 1;
+    }
+  }
+  if (Object.keys(themes).length > 0) {
+    console.log(`\n  Themes detected:`);
+    for (const [theme, count] of Object.entries(themes).sort((a, b) => b[1] - a[1])) {
+      console.log(`    ${theme}: ${count}`);
+    }
+  }
+
+  // Section type frequency (visible sections only)
   const typeFreq: Record<string, number> = {};
   for (const r of results) {
     if (!r.success) continue;
     for (const s of r.sections) {
-      typeFreq[s.type] = (typeFreq[s.type] || 0) + 1;
+      if (s.height > 0) {
+        typeFreq[s.type] = (typeFreq[s.type] || 0) + 1;
+      }
     }
   }
-
   if (Object.keys(typeFreq).length > 0) {
-    console.log(`\n  Section type frequency (across ${success} stores):`);
+    console.log(`\n  Section type frequency (visible, across ${success} stores):`);
     const sorted = Object.entries(typeFreq).sort((a, b) => b[1] - a[1]);
     for (const [type, count] of sorted.slice(0, 20)) {
-      const pct = ((count / success) * 100).toFixed(0);
-      console.log(`    ${type}: ${count} (${pct}% of stores)`);
-    }
-  }
-
-  // Common sequences
-  const seqCounts: Record<string, number> = {};
-  for (const r of results) {
-    if (!r.success) continue;
-    const contentTypes = r.sections
-      .map(s => s.type)
-      .filter(t => !['header', 'footer', 'popup', 'cart', 'unknown'].includes(t))
-      .slice(0, 5);
-    if (contentTypes.length >= 3) {
-      const key = contentTypes.join(' → ');
-      seqCounts[key] = (seqCounts[key] || 0) + 1;
-    }
-  }
-
-  const topSeqs = Object.entries(seqCounts).sort((a, b) => b[1] - a[1]).slice(0, 10);
-  if (topSeqs.length > 0) {
-    console.log(`\n  Most common section sequences:`);
-    for (const [seq, count] of topSeqs) {
-      console.log(`    [${count}x] ${seq}`);
+      console.log(`    ${type}: ${count}`);
     }
   }
 
@@ -303,12 +301,10 @@ async function main() {
   const outDir = join(process.cwd(), 'output');
   mkdirSync(outDir, { recursive: true });
   writeFileSync(join(outDir, 'structural-data.json'), JSON.stringify(results, null, 2));
-
   const successOnly = results.filter(r => r.success);
   writeFileSync(join(outDir, 'structural-sections.json'), JSON.stringify(successOnly, null, 2));
-
-  console.log(`\n💾 Full results: output/structural-data.json`);
-  console.log(`💾 Success only: output/structural-sections.json (${successOnly.length} stores)`);
+  console.log(`\n💾 output/structural-data.json (${results.length} total)`);
+  console.log(`💾 output/structural-sections.json (${successOnly.length} success)`);
 }
 
 main().catch(console.error);
