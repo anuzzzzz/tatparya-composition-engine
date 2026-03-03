@@ -1,9 +1,9 @@
 {
-  "id": "comp_4eb20145",
+  "id": "comp_75639d2a",
   "source": {
     "url": "https://www.nicobar.com",
     "type": "curated_d2c",
-    "vertical": "general"
+    "vertical": "jewellery"
   },
   "sections": [
     {
@@ -12,6 +12,69 @@
       "position": 0,
       "is_dark": false,
       "height_ratio": 0.03694581280788178,
+      "content_hints": {
+        "heading": "Get on the list",
+        "product_count": 4,
+        "has_carousel": true,
+        "grid_columns": 1
+      }
+    },
+    {
+      "type": "newsletter",
+      "confidence": 0.75,
+      "position": 1,
+      "is_dark": false,
+      "height_ratio": 0,
+      "content_hints": {
+        "heading": "Hurray!",
+        "product_count": 5,
+        "has_carousel": false,
+        "grid_columns": 1
+      }
+    },
+    {
+      "type": "product_carousel",
+      "detected_variant": "standard",
+      "confidence": 0.5,
+      "position": 2,
+      "is_dark": false,
+      "height_ratio": 0,
+      "content_hints": {
+        "has_carousel": true,
+        "grid_columns": 1
+      }
+    },
+    {
+      "type": "newsletter",
+      "confidence": 0.75,
+      "position": 3,
+      "is_dark": false,
+      "height_ratio": 0,
+      "content_hints": {
+        "heading": "Hurray!",
+        "product_count": 5,
+        "has_carousel": false,
+        "grid_columns": 1
+      }
+    },
+    {
+      "type": "about_brand",
+      "confidence": 0.6,
+      "position": 4,
+      "is_dark": false,
+      "height_ratio": 0,
+      "content_hints": {
+        "heading": "Enjoy 10% off on your first online order",
+        "has_carousel": false,
+        "grid_columns": 1
+      }
+    },
+    {
+      "type": "trust_bar",
+      "confidence": 0.5,
+      "position": 5,
+      "is_dark": false,
+      "height_ratio": 0,
       "content_hints": {
         "heading": "Get on the list",
         "product_count": 4,
@@ -46,8 +109,8 @@
       }
     ],
     "indian_color_signals": {
-      "has_gold": false,
-      "gold_proportion": 0.15946398659966496,
+      "has_gold": true,
+      "gold_proportion": 0.5315466219988833,
       "has_maroon": false,
       "maroon_proportion": 0,
       "has_saffron": false,
@@ -59,12 +122,12 @@
     "body_font": "EuclidFlex",
     "closest_pairing_id": "fp_20"
   },
-  "quality_score": 49,
-  "section_count": 1,
-  "dark_section_rhythm": "L",
+  "quality_score": 90,
+  "section_count": 6,
+  "dark_section_rhythm": "LLLLLL",
   "tags": [
     "carousel",
-    "minimal"
+    "gold-accent"
   ],
-  "crawled_at": "2026-03-02T23:11:48.687Z"
+  "crawled_at": "2026-03-02T23:32:30.718Z"
 }

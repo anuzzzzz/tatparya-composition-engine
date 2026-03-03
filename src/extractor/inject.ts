@@ -214,49 +214,10 @@ function findDeepSections(container) {
 
 function extractSections(){
   var sections=[];
-
-  // Strategy 1: Standard .shopify-section elements
   var ss=document.querySelectorAll('.shopify-section');
-  if(ss.length>0){
-    Array.from(ss).forEach(function(s){
-      if (!isVisibleSection(s)) return;
-      if (looksLikePopup(s)) return;
-      // Skip mega-sections that contain iframes (page builders)
-      var rect = s.getBoundingClientRect();
-      if (rect.height > window.innerHeight * 2 && s.querySelector('iframe')) return;
-      sections.push(analyzeSection(s, sections.length, 'shopify'));
-    });
-  }
-
-  // Strategy 2: Direct children of main (legacy / simple themes)
-  if(sections.length < 3){
-    var main=document.querySelector('main')||document.querySelector('[role="main"]')||document.querySelector('#MainContent');
-    if(main){
-      var directKids = Array.from(main.children).filter(function(el){
-        return isVisibleSection(el) && !looksLikePopup(el) && el.getBoundingClientRect().height > 50;
-      });
-      if(directKids.length >= 3){
-        sections = [];
-        directKids.forEach(function(s){
-          sections.push(analyzeSection(s, sections.length, 'heuristic'));
-        });
-      }
-    }
-  }
-
-  // Strategy 3: Deep scan for section-like elements (React/headless/custom themes)
-  if(sections.length < 3){
-    var deep = findDeepSections(document.body);
-    if(deep.length >= 2){
-      sections = [];
-      deep.forEach(function(s){
-        if (!isVisibleSection(s)) return;
-        if (looksLikePopup(s)) return;
-        sections.push(analyzeSection(s, sections.length, 'deep_scan'));
-      });
-    }
-  }
-
+  if(ss.length>0){ss.forEach(function(s,i){sections.push(analyzeSection(s,i,'shopify'));});}
+  else{var main=document.querySelector('main')||document.querySelector('[role="main"]')||document.querySelector('#MainContent')||document.body;
+    Array.from(main.children).filter(function(el){var s=getComputedStyle(el);return s.display!=='none'&&s.visibility!=='hidden'&&el.getBoundingClientRect().height>50&&el.getBoundingClientRect().width>window.innerWidth*0.5;}).forEach(function(s,i){sections.push(analyzeSection(s,i,'heuristic'));});}
   return sections;
 }
 
@@ -298,14 +259,7 @@ function extractTypography(){
 }
 
 function extractLayout(){
-  var ss=Array.from(document.querySelectorAll('.shopify-section')).filter(function(el){ return isVisibleSection(el) && !looksLikePopup(el); });
-  if (ss.length < 3) {
-    var main = document.querySelector('main') || document.querySelector('[role="main"]') || document.querySelector('#MainContent');
-    if (main) {
-      var kids = Array.from(main.children).filter(function(el) { return isVisibleSection(el); });
-      if (kids.length >= ss.length) ss = kids;
-    }
-  }
+  var ss=Array.from(document.querySelectorAll('.shopify-section'));
   var md=document.querySelector('meta[name="description"]');
   return{title:document.title||'',metaDescription:md?md.getAttribute('content')||'':'',total_sections:ss.length,totalHeight:document.body.scrollHeight,viewport_height:window.innerHeight,section_heights:ss.map(function(s){return{id:s.id,height:s.getBoundingClientRect().height,viewport_ratio:s.getBoundingClientRect().height/window.innerHeight};}),dark_light_pattern:ss.map(function(s){return isDarkBg(getComputedStyle(s).backgroundColor)?'D':'L';}).join(''),full_width_ratio:ss.length>0?ss.filter(function(s){return s.getBoundingClientRect().width>=window.innerWidth*0.95;}).length/ss.length:0};
 }

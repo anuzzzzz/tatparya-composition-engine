@@ -3,8 +3,9 @@
 // Manages the URL queue, loads pages at 375px + 1440px,
 // injects the extractor, and produces CrawlResult objects.
 //
-// FIX v4: Detects iframe-based page builders and flags for skip.
-//         Waits for structural readiness before extraction.
+// v5: Password handler for locked theme demos
+//     iframe page builder detection
+//     Structural readiness wait
 // ═══════════════════════════════════════════════════════════════
 
 import puppeteer, { type Browser, type Page } from 'puppeteer';
@@ -17,6 +18,7 @@ import { autoScroll } from './auto-scroll.js';
 import { reconcileViewports } from './viewport-reconciler.js';
 import { RateLimiter } from './rate-limiter.js';
 import { getExtractorScript } from '../extractor/inject.js';
+import { handleShopifyPassword } from './password-handler.js';
 
 const MOBILE_UA =
   'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36';
@@ -60,11 +62,10 @@ export class Crawler {
         `[Crawler] ⏭️  SKIP: ${target.url} — iframe page builder detected (${iframeInfo.builder})`
       );
 
-      // Still return a result, but with skip metadata so pipeline can handle it
       const result: CrawlResult = {
         target,
         desktop,
-        mobile: desktop, // Don't waste time crawling mobile
+        mobile: desktop,
         reconciled_sections: [],
         metadata: {
           title: desktop.layout.title || '',
@@ -82,7 +83,32 @@ export class Crawler {
       return result;
     }
 
-    // No iframe detected — proceed with mobile crawl
+    // Check for password page skip
+    if ((desktop as any)._password_locked) {
+      console.log(
+        `[Crawler] 🔒 SKIP: ${target.url} — password-protected, bypass failed`
+      );
+
+      const result: CrawlResult = {
+        target,
+        desktop,
+        mobile: desktop,
+        reconciled_sections: [],
+        metadata: {
+          title: desktop.layout.title || '',
+          description: desktop.layout.metaDescription || '',
+          crawled_at: new Date().toISOString(),
+          load_time_ms: Date.now() - start,
+          total_height_desktop_px: desktop.layout.totalHeight,
+          total_height_mobile_px: 0,
+          skip_reason: 'password_locked',
+        },
+      };
+
+      return result;
+    }
+
+    // No issues — proceed with mobile crawl
     const mobile = await this.crawlViewport(target, 'mobile');
     const reconciled_sections = reconcileViewports(desktop, mobile);
 
@@ -183,6 +209,45 @@ export class Crawler {
       // Load the page
       await page.goto(target.url, { waitUntil: 'networkidle2', timeout: 30000 });
 
+      // ── Password handler (new in v5) ──
+      // Extract theme name hint from target or URL
+      const themeHint = (target as any).theme_name ||
+        target.url.match(/\/\/([^.]+)/)?.[1]?.replace(/-theme.*$/, '') || undefined;
+
+      const accessible = await handleShopifyPassword(page, themeHint);
+
+      if (!accessible) {
+        // Password page couldn't be bypassed — return minimal result with flag
+        const screenshot = (await page.screenshot({ fullPage: true })) as Buffer;
+        const result: any = {
+          viewport,
+          sections: [],
+          palette: {
+            proportions: [], text_colors: [], accent_candidates: [],
+            css_custom_properties: {},
+            indian_color_signals: {
+              has_gold: false, gold_proportion: 0,
+              has_maroon: false, maroon_proportion: 0,
+              has_saffron: false, has_deep_green: false,
+            },
+            dominant_bg: '#FFFFFF', is_dark_theme: false,
+          },
+          typography: {
+            font_usage: {}, google_fonts_loaded: [],
+            heading_font: null, body_font: null,
+            base_font_size_px: null, heading_scale: null,
+          },
+          layout: {
+            title: '', metaDescription: '', total_sections: 0,
+            totalHeight: 0, viewport_height: VIEWPORTS[viewport].height,
+            section_heights: [], dark_light_pattern: '', full_width_ratio: 0,
+          },
+          screenshot,
+          _password_locked: true,
+        };
+        return result;
+      }
+
       // Wait for structural readiness
       await this.waitForStructuralReadiness(page);
 
@@ -208,7 +273,7 @@ export class Crawler {
       // Take full-page screenshot
       const screenshot = (await page.screenshot({ fullPage: true })) as Buffer;
 
-      // Build the result, passing through iframe detection flag
+      // Build the result
       const result: ViewportExtraction & { _iframe_page_builder?: any } = {
         viewport,
         sections: extraction.sections,

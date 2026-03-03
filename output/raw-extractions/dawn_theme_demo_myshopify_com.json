@@ -1,5 +1,5 @@
 {
-  "id": "comp_19397e21",
+  "id": "comp_826adf98",
   "source": {
     "url": "https://dawn-theme-demo.myshopify.com",
     "type": "shopify_theme_demo",
@@ -7,20 +7,14 @@
   },
   "sections": [],
   "palette": {
-    "background": "#ffffff",
+    "background": "#FFFFFF",
     "surface": "#f2f2f2",
-    "text_primary": "#31373d",
-    "text_secondary": "#6c6c6c",
-    "accent": "#008060",
+    "text_primary": "#1A1A1A",
+    "text_secondary": "#4d4d4d",
+    "accent": "#C5A455",
     "dark_bg": "#1A1A1A",
     "is_dark_theme": false,
-    "proportions": [
-      {
-        "hex": "#ffffff",
-        "proportion": 1,
-        "role": "background"
-      }
-    ],
+    "proportions": [],
     "indian_color_signals": {
       "has_gold": false,
       "gold_proportion": 0,
@@ -31,15 +25,15 @@
     }
   },
   "typography": {
-    "heading_font": "ShopifySans",
-    "body_font": "ShopifySans",
-    "closest_pairing_id": "fp_15"
+    "heading_font": "Inter",
+    "body_font": "Inter",
+    "closest_pairing_id": "fp_20"
   },
-  "quality_score": 30,
+  "quality_score": 20,
   "section_count": 0,
   "dark_section_rhythm": "",
   "tags": [
     "minimal"
   ],
-  "crawled_at": "2026-03-02T23:12:27.300Z"
+  "crawled_at": "2026-03-03T00:30:23.260Z"
 }
