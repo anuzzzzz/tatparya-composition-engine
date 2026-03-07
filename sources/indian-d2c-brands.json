@@ -1,115 +1,638 @@
 [
-  { "url": "https://www.nicobar.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.jaypore.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.suta.in", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.bewakoof.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.thesouledstore.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.snitch.co.in", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.beyoung.in", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.damenschofficial.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.bummer.in", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.femella.in", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.zivame.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.fabindia.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.20dresses.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.fullyfilmy.in", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.bombayshavingcompany.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.themancompany.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.redwolf.in", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.bacca-bucci.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.bombaytrooper.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.wtfwardrobe.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.neemans.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.zouk.co.in", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.mokobara.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.zymrat.com", "source": "curated_d2c", "vertical": "fashion" },
-
-  { "url": "https://in.sugarcosmetics.com", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.mamaearth.in", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.nykaa.com", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.plumgoodness.com", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.minimalistofficial.com", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.forestessentialsindia.com", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.vedix.com", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.pilgrimofficial.com", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.wowskincience.com", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.juicychemistry.com", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.bellavitaorganic.com", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.justherbs.in", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.arata.in", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.letsshave.com", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.beardo.in", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.ustraa.com", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.nuawoman.com", "source": "curated_d2c", "vertical": "beauty" },
-  { "url": "https://www.lakme.com", "source": "curated_d2c", "vertical": "beauty" },
-
-  { "url": "https://www.boatlifestyle.com", "source": "curated_d2c", "vertical": "electronics" },
-  { "url": "https://www.lenskart.com", "source": "curated_d2c", "vertical": "electronics" },
-  { "url": "https://www.gonoise.com", "source": "curated_d2c", "vertical": "electronics" },
-  { "url": "https://www.atomberg.com", "source": "curated_d2c", "vertical": "electronics" },
-  { "url": "https://www.wakefit.co", "source": "curated_d2c", "vertical": "electronics" },
-  { "url": "https://www.royalenfield.com", "source": "curated_d2c", "vertical": "electronics" },
-  { "url": "https://www.crossbeats.com", "source": "curated_d2c", "vertical": "electronics" },
-
-  { "url": "https://www.caratlane.com", "source": "curated_d2c", "vertical": "jewellery" },
-  { "url": "https://www.melorra.com", "source": "curated_d2c", "vertical": "jewellery" },
-  { "url": "https://www.bluestone.com", "source": "curated_d2c", "vertical": "jewellery" },
-  { "url": "https://www.tanishq.co.in", "source": "curated_d2c", "vertical": "jewellery" },
-  { "url": "https://www.kalyanjewellers.net", "source": "curated_d2c", "vertical": "jewellery" },
-  { "url": "https://www.tarinika.com", "source": "curated_d2c", "vertical": "jewellery" },
-  { "url": "https://www.adorebypriyanka.com", "source": "curated_d2c", "vertical": "jewellery" },
-  { "url": "https://www.totapari.com", "source": "curated_d2c", "vertical": "jewellery" },
-  { "url": "https://www.curiocottage.in", "source": "curated_d2c", "vertical": "jewellery" },
-  { "url": "https://www.chandranipearls.in", "source": "curated_d2c", "vertical": "jewellery" },
-  { "url": "https://www.amama.in", "source": "curated_d2c", "vertical": "jewellery" },
-
-  { "url": "https://www.thewholetruthfoods.com", "source": "curated_d2c", "vertical": "food" },
-  { "url": "https://www.sleepyowl.co", "source": "curated_d2c", "vertical": "food" },
-  { "url": "https://www.slurrpfarm.com", "source": "curated_d2c", "vertical": "food" },
-  { "url": "https://www.ragecoffee.com", "source": "curated_d2c", "vertical": "food" },
-  { "url": "https://www.paperboatdrinks.com", "source": "curated_d2c", "vertical": "food" },
-  { "url": "https://www.happilo.com", "source": "curated_d2c", "vertical": "food" },
-  { "url": "https://www.licious.in", "source": "curated_d2c", "vertical": "food" },
-  { "url": "https://www.countrydelight.in", "source": "curated_d2c", "vertical": "food" },
-  { "url": "https://www.chaayos.com", "source": "curated_d2c", "vertical": "food" },
-  { "url": "https://www.masterchow.in", "source": "curated_d2c", "vertical": "food" },
-  { "url": "https://www.alpinohealthfoods.com", "source": "curated_d2c", "vertical": "food" },
-  { "url": "https://www.twobrothersorganicfarm.com", "source": "curated_d2c", "vertical": "food" },
-  { "url": "https://www.yogabarsofficial.com", "source": "curated_d2c", "vertical": "food" },
-
-  { "url": "https://www.chumbak.com", "source": "curated_d2c", "vertical": "home_decor" },
-  { "url": "https://www.pepperfry.com", "source": "curated_d2c", "vertical": "home_decor" },
-  { "url": "https://www.woodenstreet.com", "source": "curated_d2c", "vertical": "home_decor" },
-  { "url": "https://www.urbanladder.com", "source": "curated_d2c", "vertical": "home_decor" },
-  { "url": "https://www.sleepycat.in", "source": "curated_d2c", "vertical": "home_decor" },
-  { "url": "https://www.orangetreeindia.com", "source": "curated_d2c", "vertical": "home_decor" },
-  { "url": "https://www.bonito.in", "source": "curated_d2c", "vertical": "home_decor" },
-  { "url": "https://www.gulmoharlaneindia.com", "source": "curated_d2c", "vertical": "home_decor" },
-  { "url": "https://www.goodearth.in", "source": "curated_d2c", "vertical": "home_decor" },
-  { "url": "https://www.freedomtreeindia.com", "source": "curated_d2c", "vertical": "home_decor" },
-  { "url": "https://www.casa-decor.in", "source": "curated_d2c", "vertical": "home_decor" },
-  { "url": "https://www.ellementry.com", "source": "curated_d2c", "vertical": "home_decor" },
-
-  { "url": "https://www.headsupfortails.com", "source": "curated_d2c", "vertical": "pets" },
-  { "url": "https://www.supertails.com", "source": "curated_d2c", "vertical": "pets" },
-
-  { "url": "https://www.bajaaoelectricals.com", "source": "curated_d2c", "vertical": "general" },
-  { "url": "https://www.cleardekho.com", "source": "curated_d2c", "vertical": "general" },
-  { "url": "https://www.cyankart.com", "source": "curated_d2c", "vertical": "general" },
-  { "url": "https://www.amalaearth.com", "source": "curated_d2c", "vertical": "general" },
-
-  { "url": "https://www.baayastore.com", "source": "curated_d2c", "vertical": "home_decor" },
-  { "url": "https://www.itokri.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.tjori.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.bunaai.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.global-desi.in", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.w-store.in", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.libas.in", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.biba.in", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.anouk.in", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.karagiri.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.mirraw.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.tatacliq.com", "source": "curated_d2c", "vertical": "general" },
-  { "url": "https://www.virgio.com", "source": "curated_d2c", "vertical": "fashion" },
-  { "url": "https://www.urbanmonkey.com", "source": "curated_d2c", "vertical": "fashion" }
+  {
+    "url": "https://www.suta.in",
+    "vertical": "fashion",
+    "sub_vertical": "sarees_ethnic",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.jaypore.com",
+    "vertical": "fashion",
+    "sub_vertical": "sarees_ethnic",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.fabindia.com",
+    "vertical": "fashion",
+    "sub_vertical": "sarees_ethnic",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.bunaai.com",
+    "vertical": "fashion",
+    "sub_vertical": "sarees_ethnic",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.karagiri.com",
+    "vertical": "fashion",
+    "sub_vertical": "sarees_ethnic",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.libas.in",
+    "vertical": "fashion",
+    "sub_vertical": "sarees_ethnic",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.biba.in",
+    "vertical": "fashion",
+    "sub_vertical": "sarees_ethnic",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.anouk.in",
+    "vertical": "fashion",
+    "sub_vertical": "sarees_ethnic",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.global-desi.in",
+    "vertical": "fashion",
+    "sub_vertical": "sarees_ethnic",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.w-store.in",
+    "vertical": "fashion",
+    "sub_vertical": "sarees_ethnic",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.mirraw.com",
+    "vertical": "fashion",
+    "sub_vertical": "sarees_ethnic",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.itokri.com",
+    "vertical": "fashion",
+    "sub_vertical": "sarees_ethnic",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.tjori.com",
+    "vertical": "fashion",
+    "sub_vertical": "sarees_ethnic",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.bewakoof.com",
+    "vertical": "fashion",
+    "sub_vertical": "western_casual",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.snitch.co.in",
+    "vertical": "fashion",
+    "sub_vertical": "western_casual",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.beyoung.in",
+    "vertical": "fashion",
+    "sub_vertical": "western_casual",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.femella.in",
+    "vertical": "fashion",
+    "sub_vertical": "western_casual",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.20dresses.com",
+    "vertical": "fashion",
+    "sub_vertical": "western_casual",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.virgio.com",
+    "vertical": "fashion",
+    "sub_vertical": "western_casual",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.damenschofficial.com",
+    "vertical": "fashion",
+    "sub_vertical": "western_casual",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.wtfwardrobe.com",
+    "vertical": "fashion",
+    "sub_vertical": "western_casual",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.nicobar.com",
+    "vertical": "fashion",
+    "sub_vertical": "western_casual",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.thesouledstore.com",
+    "vertical": "fashion",
+    "sub_vertical": "streetwear",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.fullyfilmy.in",
+    "vertical": "fashion",
+    "sub_vertical": "streetwear",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.redwolf.in",
+    "vertical": "fashion",
+    "sub_vertical": "streetwear",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.urbanmonkey.com",
+    "vertical": "fashion",
+    "sub_vertical": "streetwear",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.bombaytrooper.com",
+    "vertical": "fashion",
+    "sub_vertical": "streetwear",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.bummer.in",
+    "vertical": "fashion",
+    "sub_vertical": "streetwear",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.zouk.co.in",
+    "vertical": "fashion",
+    "sub_vertical": "bags_accessories",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.mokobara.com",
+    "vertical": "fashion",
+    "sub_vertical": "bags_accessories",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.bacca-bucci.com",
+    "vertical": "fashion",
+    "sub_vertical": "bags_accessories",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.zivame.com",
+    "vertical": "fashion",
+    "sub_vertical": "innerwear",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.neemans.com",
+    "vertical": "fashion",
+    "sub_vertical": "footwear",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.zymrat.com",
+    "vertical": "fashion",
+    "sub_vertical": "activewear",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.bombayshavingcompany.com",
+    "vertical": "fashion",
+    "sub_vertical": "mens_grooming",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.themancompany.com",
+    "vertical": "fashion",
+    "sub_vertical": "mens_grooming",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.minimalistofficial.com",
+    "vertical": "beauty",
+    "sub_vertical": "skincare",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.plumgoodness.com",
+    "vertical": "beauty",
+    "sub_vertical": "skincare",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.forestessentialsindia.com",
+    "vertical": "beauty",
+    "sub_vertical": "skincare_luxury",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.juicychemistry.com",
+    "vertical": "beauty",
+    "sub_vertical": "skincare",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.wowskincience.com",
+    "vertical": "beauty",
+    "sub_vertical": "skincare",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.pilgrimofficial.com",
+    "vertical": "beauty",
+    "sub_vertical": "skincare",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.vedix.com",
+    "vertical": "beauty",
+    "sub_vertical": "skincare_ayurveda",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.justherbs.in",
+    "vertical": "beauty",
+    "sub_vertical": "skincare",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://in.sugarcosmetics.com",
+    "vertical": "beauty",
+    "sub_vertical": "makeup",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.lakme.com",
+    "vertical": "beauty",
+    "sub_vertical": "makeup",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.nykaa.com",
+    "vertical": "beauty",
+    "sub_vertical": "marketplace_beauty",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.bellavitaorganic.com",
+    "vertical": "beauty",
+    "sub_vertical": "fragrance",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.mamaearth.in",
+    "vertical": "beauty",
+    "sub_vertical": "skincare_natural",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.nuawoman.com",
+    "vertical": "beauty",
+    "sub_vertical": "personal_care",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.arata.in",
+    "vertical": "beauty",
+    "sub_vertical": "haircare",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.beardo.in",
+    "vertical": "beauty",
+    "sub_vertical": "mens_grooming",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.ustraa.com",
+    "vertical": "beauty",
+    "sub_vertical": "mens_grooming",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.letsshave.com",
+    "vertical": "beauty",
+    "sub_vertical": "mens_grooming",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.caratlane.com",
+    "vertical": "jewellery",
+    "sub_vertical": "fine_jewellery",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.melorra.com",
+    "vertical": "jewellery",
+    "sub_vertical": "fine_jewellery",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.bluestone.com",
+    "vertical": "jewellery",
+    "sub_vertical": "fine_jewellery",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.tanishq.co.in",
+    "vertical": "jewellery",
+    "sub_vertical": "fine_jewellery",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.kalyanjewellers.net",
+    "vertical": "jewellery",
+    "sub_vertical": "fine_jewellery",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.tarinika.com",
+    "vertical": "jewellery",
+    "sub_vertical": "fashion_jewellery",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.adorebypriyanka.com",
+    "vertical": "jewellery",
+    "sub_vertical": "fashion_jewellery",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.totapari.com",
+    "vertical": "jewellery",
+    "sub_vertical": "fashion_jewellery",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.curiocottage.in",
+    "vertical": "jewellery",
+    "sub_vertical": "fashion_jewellery",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.chandranipearls.in",
+    "vertical": "jewellery",
+    "sub_vertical": "pearls_bridal",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.amama.in",
+    "vertical": "jewellery",
+    "sub_vertical": "fashion_jewellery",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.thewholetruthfoods.com",
+    "vertical": "food",
+    "sub_vertical": "health_snacks",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.sleepyowl.co",
+    "vertical": "food",
+    "sub_vertical": "coffee_beverages",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.slurrpfarm.com",
+    "vertical": "food",
+    "sub_vertical": "kids_food",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.ragecoffee.com",
+    "vertical": "food",
+    "sub_vertical": "coffee_beverages",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.paperboatdrinks.com",
+    "vertical": "food",
+    "sub_vertical": "beverages",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.happilo.com",
+    "vertical": "food",
+    "sub_vertical": "dry_fruits_snacks",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.licious.in",
+    "vertical": "food",
+    "sub_vertical": "meat_seafood",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.countrydelight.in",
+    "vertical": "food",
+    "sub_vertical": "dairy_fresh",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.chaayos.com",
+    "vertical": "food",
+    "sub_vertical": "tea_beverages",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.masterchow.in",
+    "vertical": "food",
+    "sub_vertical": "sauces_condiments",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.alpinohealthfoods.com",
+    "vertical": "food",
+    "sub_vertical": "health_snacks",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.twobrothersorganicfarm.com",
+    "vertical": "food",
+    "sub_vertical": "organic_farm",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.yogabarsofficial.com",
+    "vertical": "food",
+    "sub_vertical": "health_snacks",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.chumbak.com",
+    "vertical": "home_decor",
+    "sub_vertical": "quirky_decor",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.pepperfry.com",
+    "vertical": "home_decor",
+    "sub_vertical": "furniture",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.woodenstreet.com",
+    "vertical": "home_decor",
+    "sub_vertical": "furniture",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.urbanladder.com",
+    "vertical": "home_decor",
+    "sub_vertical": "furniture",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.sleepycat.in",
+    "vertical": "home_decor",
+    "sub_vertical": "mattress_sleep",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.orangetreeindia.com",
+    "vertical": "home_decor",
+    "sub_vertical": "home_decor",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.bonito.in",
+    "vertical": "home_decor",
+    "sub_vertical": "interiors",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.gulmoharlaneindia.com",
+    "vertical": "home_decor",
+    "sub_vertical": "handmade_decor",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.goodearth.in",
+    "vertical": "home_decor",
+    "sub_vertical": "luxury_decor",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.freedomtreeindia.com",
+    "vertical": "home_decor",
+    "sub_vertical": "design_decor",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.casa-decor.in",
+    "vertical": "home_decor",
+    "sub_vertical": "home_decor",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.ellementry.com",
+    "vertical": "home_decor",
+    "sub_vertical": "sustainable_home",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.baayastore.com",
+    "vertical": "home_decor",
+    "sub_vertical": "handmade_decor",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.boatlifestyle.com",
+    "vertical": "electronics",
+    "sub_vertical": "audio",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.lenskart.com",
+    "vertical": "electronics",
+    "sub_vertical": "eyewear",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.gonoise.com",
+    "vertical": "electronics",
+    "sub_vertical": "wearables",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.atomberg.com",
+    "vertical": "electronics",
+    "sub_vertical": "home_appliances",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.wakefit.co",
+    "vertical": "electronics",
+    "sub_vertical": "sleep_tech",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.royalenfield.com",
+    "vertical": "electronics",
+    "sub_vertical": "automotive",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.crossbeats.com",
+    "vertical": "electronics",
+    "sub_vertical": "audio",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.headsupfortails.com",
+    "vertical": "pets",
+    "sub_vertical": "pet_supplies",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.supertails.com",
+    "vertical": "pets",
+    "sub_vertical": "pet_supplies",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.kapiva.in",
+    "vertical": "wellness",
+    "sub_vertical": "ayurveda",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.amalaearth.com",
+    "vertical": "wellness",
+    "sub_vertical": "conscious_living",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.tatacliq.com",
+    "vertical": "general",
+    "sub_vertical": "marketplace",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.cleardekho.com",
+    "vertical": "general",
+    "sub_vertical": "eyewear",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.cyankart.com",
+    "vertical": "general",
+    "sub_vertical": "general",
+    "source": "curated_d2c"
+  },
+  {
+    "url": "https://www.bajaaoelectricals.com",
+    "vertical": "general",
+    "sub_vertical": "general",
+    "source": "curated_d2c"
+  }
 ]

@@ -85,6 +85,7 @@ export function normalizeExtraction(
       type: raw.target.source,
       theme_name: raw.target.theme_name,
       vertical,
+      sub_vertical: raw.target.sub_vertical,
     },
     sections,
     palette,

@@ -45,6 +45,7 @@ export function assembleLibrary(
     source_url: comp.source.url,
     source_type: comp.source.type,
     vertical: comp.source.vertical || 'general',
+    sub_vertical: comp.source.sub_vertical,
     tags: comp.tags,
     quality_score: comp.quality_score,
     effective_score: comp.effective_score ?? comp.quality_score,

@@ -66,7 +66,7 @@ If this is a password-protected page, return:
 IMPORTANT: Return the raw JSON only, no markdown formatting, no backticks.
 `;
 
-function inferTypeFromSectionId(id: string): string {
+function inferTypeFromSectionId(id: string, height: number = -1): string {
   const lower = id.toLowerCase();
 
   // Strip common prefixes
@@ -76,6 +76,7 @@ function inferTypeFromSectionId(id: string): string {
     .replace(/template--\d+__/, '')
     .replace(/_[a-z0-9]{6,}$/i, ''); // strip random suffixes like _4VCgQr
 
+  // --- Original v5 rules ---
   if (cleaned.includes('header') || cleaned.includes('nav')) return 'header';
   if (cleaned.includes('footer')) return 'footer';
   if (cleaned.includes('announcement') || cleaned.includes('global-banner')) return 'announcement_bar';
@@ -107,6 +108,29 @@ function inferTypeFromSectionId(id: string): string {
   if (cleaned.includes('geofenc') || cleaned.includes('geo')) return 'geofencing';
   if (cleaned.includes('marquee') || cleaned.includes('ticker')) return 'marquee';
   if (cleaned.includes('trust') || cleaned.includes('usp') || cleaned.includes('guarantee')) return 'trust_bar';
+
+  // --- v6 additions — reduce "unknown" bucket ---
+  if (cleaned.includes('banner')) return 'hero';
+  if (cleaned.includes('spacer') || cleaned.includes('divider')) return 'spacer';
+  if (cleaned.includes('quick_links') || cleaned.includes('quick-links')) return 'quick_links';
+  if (cleaned.includes('flexible') || cleaned.includes('content_row') || cleaned.includes('content-row')) return 'flexible_content';
+  if (cleaned.includes('fifty_fifty') || cleaned.includes('fifty-fifty') || cleaned.includes('split')) return 'image_with_text';
+  if (cleaned.includes('featured_content') || cleaned.includes('featured-content')) return 'featured_products';
+  if (cleaned.includes('about') || cleaned.includes('story') || cleaned.includes('mission')) return 'rich_text';
+  if (cleaned.includes('categories')) return 'collection';
+  if (cleaned.includes('paragraph') || cleaned.includes('generic_text') || cleaned.includes('generic-text')) return 'rich_text';
+  if (cleaned.includes('newest') || cleaned.includes('new-arrival') || cleaned.includes('new_arrival')) return 'featured_products';
+  if (cleaned.includes('featured-block') || cleaned.includes('featured_block')) return 'featured_products';
+  if (cleaned.includes('reward') || cleaned.includes('loyalty') || cleaned.includes('treecounter')) return 'rewards_bar';
+  if (cleaned.includes('animated') || cleaned.includes('cards')) return 'promo_tiles';
+  if (cleaned.includes('ig-feed') || cleaned.includes('ig_feed') || cleaned.includes('instagram')) return 'social_feed';
+  if (cleaned.includes('swatch') || cleaned.includes('badges') || cleaned.includes('redirect') || cleaned.includes('minisearch')) return 'utility';
+  if (cleaned.includes('protect') || cleaned.includes('bopis') || cleaned.includes('optimization') || cleaned.includes('chatbot')) return 'app_embed';
+  if (cleaned.includes('fireworks') || cleaned.includes('gradient') || cleaned.includes('screen-effect')) return 'visual_effect';
+  if (cleaned === 'main' || cleaned.endsWith('__main')) return 'main_content';
+
+  // Height=0 heuristic: unrecognized zero-height sections are hidden utility/app embeds
+  if (height === 0) return 'app_embed';
 
   return 'unknown';
 }
@@ -173,7 +197,7 @@ async function fetchWithTinyfish(url: string): Promise<StructuralResult> {
 
     const sections: SectionInfo[] = rawSections.map((s: any) => ({
       id: s.id || 'unknown',
-      type: inferTypeFromSectionId(s.id || ''),
+      type: inferTypeFromSectionId(s.id || '', s.height || 0),
       height: s.height || 0,
       tag: s.tag || 'div',
     }));

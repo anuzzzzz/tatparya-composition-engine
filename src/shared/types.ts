@@ -9,6 +9,7 @@ export interface CrawlTarget {
   url: string;
   source: 'shopify_theme_demo' | 'live_store' | 'curated_d2c';
   vertical?: string;
+  sub_vertical?: string;
   theme_name?: string;
   preset_name?: string;
 }
@@ -209,6 +210,7 @@ export interface NormalizedComposition {
     type: 'shopify_theme_demo' | 'live_store' | 'curated_d2c';
     theme_name?: string;
     vertical?: string;
+    sub_vertical?: string;
   };
   sections: NormalizedSection[];
   palette: NormalizedPalette;
@@ -292,6 +294,7 @@ export interface CompositionTemplate {
   source_url: string;
   source_type: string;
   vertical: string;
+  sub_vertical?: string;
   tags: string[];
   quality_score: number;
   effective_score: number;
